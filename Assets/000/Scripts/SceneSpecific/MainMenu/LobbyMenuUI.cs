@@ -27,7 +27,12 @@ namespace Magus.SceneSpecific
 
         public async void RequestCreateLobby()
         {
-            string lobbyName = string.IsNullOrWhiteSpace(lobbyNameText.text) ? $"{PlayerInfoManager.instance.PlayerInfo.username}'s Lobby" : lobbyNameText.text;
+            string defaultLobbyName = $"{PlayerInfoManager.instance.PlayerInfo.username}'s Lobby";
+            if (defaultLobbyName.Length > 30) defaultLobbyName = PlayerInfoManager.instance.PlayerInfo.username[..22] + "'s Lobby";
+            string lobbyName = string.IsNullOrWhiteSpace(lobbyNameText.text) ? defaultLobbyName : lobbyNameText.text;
+
+            if (lobbyName.Length > 30) lobbyName = lobbyName[..30];
+            
             LobbyServiceException e = await LobbyManager.instance.CreateLobbyInstance(lobbyName, privateToggle.isOn);
             if (e != null)
             {

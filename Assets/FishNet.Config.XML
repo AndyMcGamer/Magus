@@ -2,7 +2,7 @@
 <ConfigurationData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Loaded>true</Loaded>
   <PrefabGenerator>
-    <Enabled>false</Enabled>
+    <Enabled>true</Enabled>
     <LogToConsole>true</LogToConsole>
     <FullRebuild>false</FullRebuild>
     <SpawnableOnly>true</SpawnableOnly>

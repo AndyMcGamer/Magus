@@ -2,8 +2,8 @@ using Magus.Global;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
@@ -37,7 +37,7 @@ namespace Magus.MatchmakingSystem
         private string _playerId;
         public string PlayerId => _playerId;
 
-        public Player LocalPlayer => _lobby.Players.Find(x => x.Id ==  _playerId);
+        public Player LocalPlayer => _lobby.Players.Find(x => x.Id == _playerId);
 
         private bool _isHost;
         public bool IsHost => _isHost;
@@ -167,7 +167,7 @@ namespace Magus.MatchmakingSystem
                     Player = player,
                 };
 
-                Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(joinCode, joinOptions);
+                Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(joinCode, joinOptions);
                 _lobby = lobby;
                 _lobbyCode = lobby.LobbyCode;
                 _playerId = player.Id;
@@ -197,16 +197,17 @@ namespace Magus.MatchmakingSystem
 
         private async Task SubscribeToCallbacks()
         {
-            (LobbyService.Instance as ILobbyServiceSDKConfiguration).EnableLocalPlayerLobbyEvents(true);
-
             var callbacks = new LobbyEventCallbacks();
             callbacks.LobbyChanged += OnLobbyChanged;
             callbacks.KickedFromLobby += OnKickedFromLobby;
             callbacks.LobbyEventConnectionStateChanged += OnLobbyEventConnectionStateChanged;
+            callbacks.PlayerJoined += OnPlayerJoined;
+            callbacks.PlayerDataChanged += PlayerDataChanged;
+            callbacks.PlayerLeft += OnPlayerLeft;
 
             try
             {
-                lobbyEvents = await Lobbies.Instance.SubscribeToLobbyEventsAsync(_lobby.Id, callbacks);
+                lobbyEvents = await LobbyService.Instance.SubscribeToLobbyEventsAsync(_lobby.Id, callbacks);
             }
             catch (LobbyServiceException ex)
             {
@@ -215,6 +216,18 @@ namespace Magus.MatchmakingSystem
                     case LobbyExceptionReason.AlreadySubscribedToLobby: Debug.LogWarning($"Already subscribed to lobby[{_lobby.Id}]. We did not need to try and subscribe again. Exception Message: {ex.Message}"); break;
                     case LobbyExceptionReason.SubscriptionToLobbyLostWhileBusy: Debug.LogError($"Subscription to lobby events was lost while it was busy trying to subscribe. Exception Message: {ex.Message}"); throw;
                     case LobbyExceptionReason.LobbyEventServiceConnectionError: Debug.LogError($"Failed to connect to lobby events. Exception Message: {ex.Message}"); throw;
+                }
+            }
+        }
+
+        private void PlayerDataChanged(Dictionary<int, Dictionary<string, ChangedOrRemovedLobbyValue<PlayerDataObject>>> dictionary)
+        {
+            foreach (var item in dictionary)
+            {
+                print("Key: " + item.Key);
+                foreach (var value in dictionary[item.Key])
+                {
+                    print("Value: " + value.Value.Value.Value);
                 }
             }
         }
@@ -231,6 +244,8 @@ namespace Magus.MatchmakingSystem
                 print("Update");
                 changes.ApplyToLobby(_lobby);
 
+                // print($"Joined: {changes.PlayerJoined.Changed} Left: {changes.PlayerLeft.Changed}");
+
                 OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
 
                 if (!_isHost && _lobby.Data["RelayCode"].Value != "0")
@@ -244,9 +259,28 @@ namespace Magus.MatchmakingSystem
                             OnGameStarted?.Invoke(this, EventArgs.Empty);
                         }
                     }
+                }
 
+                Player hostPlayer = _lobby.Players.Find(x => x.Id == _lobby.HostId);
+                if(!_isHost && hostPlayer != null && hostPlayer.Data["PlayerNumber"].Value == LocalPlayer.Data["PlayerNumber"].Value)
+                {
+                    await TogglePlayerNumber();
                 }
             }
+        }
+
+        private async void OnPlayerJoined(List<LobbyPlayerJoined> playersJoined)
+        {
+            Lobby lobby = await LobbyService.Instance.GetLobbyAsync(_lobby.Id);
+            _lobby = lobby;
+            OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
+        }
+
+        private async void OnPlayerLeft(List<int> list)
+        {
+            OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
+            print("PlayerLeft");
+            await UpdateHost();
         }
 
         private void OnKickedFromLobby()
@@ -319,7 +353,7 @@ namespace Magus.MatchmakingSystem
                     }
                 };
                 Lobby newLobby = await LobbyService.Instance.UpdatePlayerAsync(_lobby.Id, _playerId, playerOptions);
-                //_lobby = newLobby;
+                _lobby = newLobby;
 
             }
             catch (LobbyServiceException)
@@ -340,7 +374,7 @@ namespace Magus.MatchmakingSystem
                     }
                 };
                 Lobby newLobby = await LobbyService.Instance.UpdatePlayerAsync(_lobby.Id, _playerId, playerOptions);
-                //_lobby = newLobby;
+                _lobby = newLobby;
 
             }
             catch (LobbyServiceException)
@@ -349,21 +383,12 @@ namespace Magus.MatchmakingSystem
             }
         }
 
-        public async Task TogglePlayerNumbers()
+        public async Task TogglePlayerNumber()
         {
             if(_lobby != null)
             {
-                foreach (var player in _lobby.Players)
-                {
-                    if (player.Data["PlayerNumber"].Value == "1")
-                    {
-                        await SetPlayerNumber("2", player.Id);
-                    }
-                    else if (player.Data["PlayerNumber"].Value == "2")
-                    {
-                        await SetPlayerNumber("1", player.Id);
-                    }
-                }
+                string currentNumber = LocalPlayer.Data["PlayerNumber"].Value;
+                await SetPlayerNumber(currentNumber == "1" ? "2" : "1");
             }
         }
 
@@ -379,27 +404,6 @@ namespace Magus.MatchmakingSystem
                     }
                 };
                 Lobby newLobby = await LobbyService.Instance.UpdatePlayerAsync(_lobby.Id, _playerId, playerOptions);
-                //_lobby = newLobby;
-
-            }
-            catch (LobbyServiceException)
-            {
-
-            }
-        }
-
-        private async Task SetPlayerNumber(string playerNumber, string playerId)
-        {
-            try
-            {
-                UpdatePlayerOptions playerOptions = new UpdatePlayerOptions
-                {
-                    Data = new Dictionary<string, PlayerDataObject>
-                    {
-                        { "PlayerNumber", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNumber) }
-                    }
-                };
-                Lobby newLobby = await LobbyService.Instance.UpdatePlayerAsync(_lobby.Id, playerId, playerOptions);
                 //_lobby = newLobby;
 
             }
@@ -431,7 +435,6 @@ namespace Magus.MatchmakingSystem
                 else
                 {
                     await SetPlayerNumber((playerTwo) ?  "1" : "2");
-                    print((playerTwo) ? "1" : "2");
                 }
             }
         }
@@ -445,7 +448,7 @@ namespace Magus.MatchmakingSystem
                     AllocationId = allocationId
                 };
                 Lobby newLobby = await LobbyService.Instance.UpdatePlayerAsync(_lobby.Id, _playerId, playerOptions);
-                _lobby = newLobby;
+                //_lobby = newLobby;
             }
             catch (LobbyServiceException)
             {
@@ -453,7 +456,7 @@ namespace Magus.MatchmakingSystem
             }
         }
 
-        public async void LeaveLobby()
+        public async Task LeaveLobby()
         {
             try
             {
@@ -461,8 +464,6 @@ namespace Magus.MatchmakingSystem
                 {
                     await LobbyService.Instance.RemovePlayerAsync(_lobby.Id, _playerId);
                     ResetLobbyInfo();
-
-                    OnLeftLobby?.Invoke(this, EventArgs.Empty);
                 }
             }
             catch (LobbyServiceException)
@@ -492,7 +493,7 @@ namespace Magus.MatchmakingSystem
             {
                 if (_isHost)
                 {
-                    Lobby updatedLobby = await Lobbies.Instance.UpdateLobbyAsync(_lobby.Id, new UpdateLobbyOptions
+                    Lobby updatedLobby = await LobbyService.Instance.UpdateLobbyAsync(_lobby.Id, new UpdateLobbyOptions
                     {
                         HostId = playerId,
                     });
@@ -503,6 +504,17 @@ namespace Magus.MatchmakingSystem
             catch (LobbyServiceException)
             {
 
+            }
+        }
+
+        private async Task UpdateHost()
+        {
+            Lobby updatedLobby = await LobbyService.Instance.GetLobbyAsync(_lobby.Id);
+            _lobby = updatedLobby;
+            if (_playerId == _lobby.HostId)
+            {
+                _isHost = true;
+                OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
             }
         }
 
@@ -522,7 +534,7 @@ namespace Magus.MatchmakingSystem
                         }
                     };
 
-                    Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(_lobby.Id, options);
+                    Lobby lobby = await LobbyService.Instance.UpdateLobbyAsync(_lobby.Id, options);
 
                     _lobby = lobby;
                     OnGameStarted?.Invoke(this, EventArgs.Empty);
@@ -548,7 +560,10 @@ namespace Magus.MatchmakingSystem
 
         private async void ResetLobbyInfo()
         {
-            await lobbyEvents.UnsubscribeAsync();
+            if (lobbyEvents != null)
+            {
+                await lobbyEvents.UnsubscribeAsync();
+            }
             lobbyEvents = null;
             _lobby = null;
             _isHost = false;
@@ -556,9 +571,9 @@ namespace Magus.MatchmakingSystem
             _playerId = "";
         }
 
-        private void OnApplicationQuit()
+        private async void OnApplicationQuit()
         {
-            if(_lobby != null) LobbyService.Instance.RemovePlayerAsync(_lobby.Id, _playerId);
+            if(_lobby != null) await LobbyService.Instance.RemovePlayerAsync(_lobby.Id, _playerId);
         }
     }
 }

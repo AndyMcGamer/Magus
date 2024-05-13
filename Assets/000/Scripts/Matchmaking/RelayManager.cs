@@ -1,5 +1,7 @@
 using FishNet;
+using FishNet.Transporting.Multipass;
 using FishNet.Transporting.UTP;
+using FishNet.Transporting.Yak;
 using Magus.Global;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,11 +37,14 @@ namespace Magus.MatchmakingSystem
                 var unityTransport = InstanceFinder.TransportManager.GetTransport<FishyUnityTransport>();
                 unityTransport.SetRelayServerData(new RelayServerData(allocation, "dtls"));
 
-                if (InstanceFinder.ServerManager.StartConnection())
+                Multipass mp = InstanceFinder.TransportManager.GetTransport<Multipass>();
+                mp.SetClientTransport<FishyUnityTransport>();
+
+                if (mp.StartConnection(true, Constants.UTP_TRANSPORT_INDEX))
                 {
                     LobbyManager.instance.UpdateGameStatus(true);
-                    InstanceFinder.ClientManager.StartConnection();
                     LobbyManager.instance.SetAllocationId(allocation.AllocationId.ToString());
+                    InstanceFinder.ClientManager.StartConnection();
                     return joinCode;
                 }
                 return null;
@@ -58,6 +63,9 @@ namespace Magus.MatchmakingSystem
 
                 var unityTransport = InstanceFinder.TransportManager.GetTransport<FishyUnityTransport>();
                 unityTransport.SetRelayServerData(new RelayServerData(joinAllocation, "dtls"));
+
+                Multipass mp = InstanceFinder.TransportManager.GetTransport<Multipass>();
+                mp.SetClientTransport<FishyUnityTransport>();
 
                 LobbyManager.instance.UpdateGameStatus(true);
                 LobbyManager.instance.SetAllocationId(joinAllocation.AllocationId.ToString());

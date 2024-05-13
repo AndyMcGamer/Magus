@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Magus.Global
 {
     public static class Constants
@@ -21,5 +17,13 @@ namespace Magus.Global
         /// Rate at which lobby requests update
         /// </summary>
         public static readonly float LOBBY_UPDATE_RATE = 1.01f;
+
+        // Transport Indices for Multipass
+        public static readonly int UTP_TRANSPORT_INDEX = 0;
+        public static readonly int YAK_TRANSPORT_INDEX = 1;
+
+        // Minimum players needed to go from loading to game
+        public static readonly int MIN_PLAYERS_SOLO = 1;
+        public static readonly int MIN_PLAYERS_1V1 = 2;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.Services.Lobbies;
 using UnityEngine;
 
 namespace Magus.MatchmakingSystem
@@ -38,6 +39,8 @@ namespace Magus.MatchmakingSystem
             {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
+
+            (LobbyService.Instance as ILobbyServiceSDKConfiguration).EnableLocalPlayerLobbyEvents(true);
         }
     }
 }

@@ -1,5 +1,7 @@
+using FishNet.Managing.Scened;
 using Magus.Global;
 using Magus.MatchmakingSystem;
+using Magus.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,6 +34,7 @@ namespace Magus.SceneSpecific
         [Header("Buttons")]
         [SerializeField] private Button startButton;
         [SerializeField] private Button toggleButton;
+        [SerializeField] private Button backButton;
 
         [Header("Shared")]
         [SerializeField] private TextMeshProUGUI lobbyNameText;
@@ -132,7 +135,17 @@ namespace Magus.SceneSpecific
                     allPlayersReady = false;
                 }
 
-                print($"{player.Data["PlayerNumber"].Value} {player.Id} {LobbyManager.instance.Lobby.HostId}");
+                if (LobbyManager.instance.LocalPlayer.Data["PlayerNumber"].Value == "1")
+                {
+                    usernameText1.color = Color.green;
+                    usernameText2.color = Color.red;
+                }
+                else if(LobbyManager.instance.LocalPlayer.Data["PlayerNumber"].Value == "2")
+                {
+                    usernameText1.color = Color.red;
+                    usernameText2.color = Color.green;
+                }
+
             }
 
             if (LobbyManager.instance.IsHost) startButton.interactable = (allPlayersReady && LobbyManager.instance.Lobby.Players.Count == Constants.MAX_PLAYERS);
@@ -145,22 +158,23 @@ namespace Magus.SceneSpecific
 
         private void LobbyKicked(object sender, LobbyManager.LobbyEventArgs e)
         {
-            
+            SceneSwitcher.instance.LoadScene("MainMenu");
         }
 
         private void LeftLobby(object sender, EventArgs e)
         {
-            
+            SceneSwitcher.instance.LoadScene("MainMenu");
         }
 
         private void LobbyDeleted(object sender, EventArgs e)
         {
-
+            SceneSwitcher.instance.LoadScene("MainMenu");
         }
 
         private void GameStarted(object sender, EventArgs e)
         {
-
+            LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_1V1 } };
+            SceneSwitcher.instance.LoadGlobalNetworkedScene("LoadingScene", loadParams);
         }
 
         public void ToggleReady()
@@ -172,7 +186,7 @@ namespace Magus.SceneSpecific
         public async void TogglePlayerSides()
         {
             toggleButton.interactable = false;
-            await LobbyManager.instance.TogglePlayerNumbers();
+            await LobbyManager.instance.TogglePlayerNumber();
             toggleButton.interactable = true;
         }
 
@@ -196,5 +210,11 @@ namespace Magus.SceneSpecific
             await LobbyManager.instance.StartGame();
         }
 
+        public async void LeaveLobby()
+        {
+            backButton.interactable = false;
+            await LobbyManager.instance.LeaveLobby();
+            backButton.interactable = true;
+        }
     }
 }

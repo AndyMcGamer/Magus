@@ -18,6 +18,9 @@ namespace Magus.SceneSpecific
     {
         [SerializeField] private MainMenuScreen[] mainMenuScreens;
 
+        [Header("References")]
+        [SerializeField] private TrainingStarter trainingStarter;
+
         [Header("Lobby Menus")]
         [SerializeField] private LobbyMenuUI lobbyMenuUI;
 
@@ -46,7 +49,7 @@ namespace Magus.SceneSpecific
 
         private void JoinLobby(object sender, LobbyManager.LobbyEventArgs e)
         {
-            SceneSwitcher.instance.LoadScene("LobbyScene");
+            GoToScene("LobbyScene");
         }
 
         private void DisableAllScreens()
@@ -64,6 +67,11 @@ namespace Magus.SceneSpecific
             var screen = System.Array.Find(mainMenuScreens, x => x.name == screenName);
             screen.screen.SetActive(true);
             CancelEditUsername();
+        }
+
+        public void GoToScene(string sceneName)
+        {
+            SceneSwitcher.instance.LoadScene(sceneName);
         }
 
         public void StartEditUsername()
@@ -89,6 +97,11 @@ namespace Magus.SceneSpecific
         private void UsernameChanged(object sender, string e)
         {
             usernameText.text = e;
+        }
+
+        public void StartTraining()
+        {
+            trainingStarter.StartTrainingRoom();
         }
     }
 }

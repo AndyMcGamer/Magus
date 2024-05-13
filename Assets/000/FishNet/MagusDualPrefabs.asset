@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4b890523e001c74a9a2bf0d6340e5f7, type: 3}
+  m_Name: MagusDualPrefabs
+  m_EditorClassIdentifier: 
+  _prefabs:
+  - Server: {fileID: 6659901045835984101, guid: 6667b57eef78b0345a9c815172a202b9,
+      type: 3}
+    Client: {fileID: 8320571852264369347, guid: 39598c0caee3f0f419f26b434cc5aaa0,
+      type: 3}
