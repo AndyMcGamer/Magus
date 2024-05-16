@@ -1,4 +1,5 @@
 using FishNet.Managing.Scened;
+using Magus.Game;
 using Magus.Global;
 using Magus.MatchmakingSystem;
 using Magus.SceneManagement;
@@ -173,7 +174,7 @@ namespace Magus.SceneSpecific
 
         private void GameStarted(object sender, EventArgs e)
         {
-            LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_1V1 } };
+            LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_1V1, (int)GameMode.Standard } };
             SceneSwitcher.instance.LoadGlobalNetworkedScene("LoadingScene", loadParams);
         }
 

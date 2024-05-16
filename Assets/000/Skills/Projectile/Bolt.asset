@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 964a5134e59bf0b4c8940161e9ebc52e, type: 3}
+  m_Name: Bolt
+  m_EditorClassIdentifier: 
+  <Name>k__BackingField: Bolt
+  <Description>k__BackingField: 
+  <MaxLevel>k__BackingField: 1
+  skillType: 0
+  projectilePrefab: {fileID: 7907540912251384645, guid: 6ed8235e90a17434597bd75f8631dfe4,
+    type: 3}
+  <Cost>k__BackingField:
+  - 0
+  <Cooldown>k__BackingField:
+  - 0.5
+  damage:
+  - 10
+  moveRate:
+  - 15
+  lifetime:
+  - 1

@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/000/Scenes/TrainingRoom.unity
     guid: 24855adb3d9edd545849353c654b2cef
+  - enabled: 1
+    path: Assets/000/Scenes/RoundTimer.unity
+    guid: c4835504dcf0f3b469dab79a51a541e7
   m_configObjects: {}

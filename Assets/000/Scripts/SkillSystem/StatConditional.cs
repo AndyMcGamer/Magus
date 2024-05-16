@@ -24,15 +24,4 @@ namespace Magus.Skills
             };
         }
     }
-
-    //public class TimeConditional : Conditional<PlayerStats>
-    //{
-    //    public float timer;
-    //    public override bool Evaluate(PlayerStats input)
-    //    {
-    //        if (timer > 0) return true;
-    //        timer -= Time.deltaTime;
-    //        return false;
-    //    }
-    //}
 }

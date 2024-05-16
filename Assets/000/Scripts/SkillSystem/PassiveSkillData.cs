@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Magus.Skills
 {
-    [CreateAssetMenu(fileName = "New PassiveSkillData", menuName = "Magus/Skills/PassiveSkillData")]
+    [CreateAssetMenu(fileName = "New PassiveSkill", menuName = "Magus/Skills/PassiveSkillData")]
     public class PassiveSkillData : SkillData
     {
         public override float[] Cost { get; protected set; } = { 0 };
-        [field: SerializeField] public override float[] Cooldown { get; protected set; }
+        public override float[] Cooldown { get; protected set; } = { 0 };
 
         public StatModifierList[] statModifiers;
 

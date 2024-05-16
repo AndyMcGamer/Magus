@@ -39,14 +39,18 @@ namespace Magus.SceneManagement
             }
         }
 
-        public void LoadGlobalNetworkedScene(string sceneName)
+        public void LoadGlobalNetworkedScene(string sceneName, bool setPreferred = true, ReplaceOption replaceOption = ReplaceOption.All)
         {
             if (!InstanceFinder.IsServerStarted) return;
             SceneLoadData sld = new SceneLoadData(sceneName);
             sld.Options.AllowStacking = false;
-            sld.ReplaceScenes = ReplaceOption.All;
+            sld.ReplaceScenes = replaceOption;
             sld.Options.AutomaticallyUnload = true;
-            sld.PreferredActiveScene = new PreferredScene(new SceneLookupData(sceneName));
+            if (setPreferred)
+            {
+                sld.PreferredActiveScene = new PreferredScene(new SceneLookupData(sceneName));
+            }
+            
 
             InstanceFinder.SceneManager.LoadGlobalScenes(sld);
         }
@@ -84,7 +88,7 @@ namespace Magus.SceneManagement
             SceneLookupData lookup = new SceneLookupData(sceneName);
             SceneLoadData sld = new SceneLoadData(lookup);
             sld.Options.AllowStacking = true;
-            sld.ReplaceScenes = ReplaceOption.All;
+            sld.ReplaceScenes = ReplaceOption.None;
             sld.Options.LocalPhysics = LocalPhysicsMode.Physics3D;
             sld.PreferredActiveScene = new PreferredScene(lookup);
             InstanceFinder.SceneManager.LoadConnectionScenes(conns, sld);

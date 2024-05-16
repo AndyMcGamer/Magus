@@ -11,13 +11,11 @@ namespace Magus.SceneSpecific
     public class TrainingPlayerSpawner : NetworkBehaviour
     {
         [SerializeField] private NetworkObject clientPlayer;
-        [SerializeField] private NetworkObject serverPlayer;
         [SerializeField] private Vector3 spawnpoint;
 
         public override void OnStartClient()
         {
             base.OnStartClient();
-            //print(UnityEngine.SceneManagement.SceneManager.GetActiveScene().handle);
             SpawnPlayer(base.LocalConnection);
         }
 

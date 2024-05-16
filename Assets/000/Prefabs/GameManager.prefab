@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2666646340731000960}
   - component: {fileID: 8673274490836643875}
   - component: {fileID: 7082387328892042449}
+  - component: {fileID: 4974162872075294821}
+  - component: {fileID: 3668955930712314718}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -87,6 +89,31 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 0
   <SpawnableCollectionId>k__BackingField: 0
-  _scenePathHash: 2154339749
+  _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 5581642704683308666
+--- !u!114 &4974162872075294821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158281664648010998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c4ea9a254d1230469dc9f470968c21b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roundNumber: 0
+--- !u!114 &3668955930712314718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158281664648010998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7e8b3184e9fd00408dffc97da27b066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

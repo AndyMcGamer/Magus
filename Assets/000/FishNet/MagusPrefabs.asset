@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: MagusPrefabs
   m_EditorClassIdentifier: 
   _prefabs:
-  - {fileID: 8320571852264369347, guid: 39598c0caee3f0f419f26b434cc5aaa0, type: 3}
+  - {fileID: 1492763436120625470, guid: 39598c0caee3f0f419f26b434cc5aaa0, type: 3}
+  - {fileID: 7082387328892042449, guid: 0474dff5507e3074a87ecdcdf3cdddc0, type: 3}

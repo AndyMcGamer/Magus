@@ -2,6 +2,8 @@ using FishNet.Connection;
 using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using Magus.Game;
+using Magus.Global;
 using Magus.SceneManagement;
 using System;
 using System.Collections;
@@ -15,8 +17,6 @@ namespace Magus.SceneSpecific
     public class GameLoader : NetworkBehaviour
     {
         private readonly SyncVar<float> countdownTimer = new SyncVar<float>(new SyncTypeSettings(1f));
-        [SerializeField] private float initialCountdownTime;
-        [SerializeField] private float acceleratedCountdownTime;
 
         [SerializeField] private int minPlayers;
         [SerializeField] private int neededTrainingRooms;
@@ -24,11 +24,12 @@ namespace Magus.SceneSpecific
         public event Action<float> OnCountdownChanged;
 
         private bool activatedSceneChange;
+        private GameMode gameMode;
 
         private void Awake()
         {
             countdownTimer.OnChange += CountdownChanged;
-            OnCountdownChanged?.Invoke(initialCountdownTime);
+            OnCountdownChanged?.Invoke(Constants.LOADING_INITIAL_TIME);
             if (base.IsServerInitialized)
             {
                 base.SceneManager.OnClientLoadedStartScenes += ClientLoadedStartScene;
@@ -49,7 +50,7 @@ namespace Magus.SceneSpecific
         public override void OnStartServer()
         {
             base.OnStartServer();
-            countdownTimer.Value = initialCountdownTime;
+            countdownTimer.Value = Constants.LOADING_INITIAL_TIME;
             activatedSceneChange = false;
             print("Server Start");
             base.SceneManager.OnClientLoadedStartScenes += ClientLoadedStartScene;
@@ -75,6 +76,8 @@ namespace Magus.SceneSpecific
                 int[] serverParams = args.QueueData.SceneLoadData.Params.ServerParams.Cast<int>().ToArray();
                 minPlayers = serverParams[0];
                 neededTrainingRooms = minPlayers;
+
+                gameMode = (GameMode)serverParams[1];
                 return;
             }
             loadedScene = args.LoadedScenes.FirstOrDefault(x => x.name == "TrainingRoom");
@@ -100,7 +103,7 @@ namespace Magus.SceneSpecific
                     SceneSwitcher.instance.LoadStackedNetworkScene(openScenes[j].handle, conn);
                     ++j;
                 }
-                //SceneSwitcher.instance.UnloadGlobalNetworkedScene("LoadingScene");
+                MatchController.instance.StartMatch(gameMode);
             }
         }
 
@@ -114,6 +117,7 @@ namespace Magus.SceneSpecific
             {
                 if(next <= 0 && !activatedSceneChange)
                 {
+                    SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, ReplaceOption.None);
                     SceneSwitcher.instance.PreloadNetworkScenes("TrainingRoom");
                     activatedSceneChange = true;
                     //SceneSwitcher.instance.UnloadGlobalNetworkedScene("LoadingScene");
@@ -129,9 +133,9 @@ namespace Magus.SceneSpecific
                 if(countdownTimer.Value > 0)
                 {
                     countdownTimer.Value -= Time.deltaTime;
-                    if(minPlayers == base.ServerManager.Clients.Count && countdownTimer.Value > acceleratedCountdownTime)
+                    if(minPlayers == base.ServerManager.Clients.Count && countdownTimer.Value > Constants.LOADING_ACCEL_TIME)
                     {
-                        countdownTimer.Value = acceleratedCountdownTime;
+                        countdownTimer.Value = Constants.LOADING_ACCEL_TIME;
                     }
                 }
             }

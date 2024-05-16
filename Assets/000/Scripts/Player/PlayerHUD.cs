@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Magus.PlayerController
 {
-    public class PlayerHUD : MonoBehaviour
+    public class PlayerHUD : PlayerControllerComponent
     {
         [Header("References")]
         [SerializeField] private GameObject skillScreen;

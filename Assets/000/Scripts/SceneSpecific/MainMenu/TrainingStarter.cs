@@ -4,6 +4,7 @@ using FishNet.Managing.Client;
 using FishNet.Managing.Scened;
 using FishNet.Transporting.Multipass;
 using FishNet.Transporting.Yak;
+using Magus.Game;
 using Magus.Global;
 using Magus.SceneManagement;
 using System.Collections;
@@ -23,7 +24,7 @@ namespace Magus.SceneSpecific
             ClientManager clientManager = InstanceFinder.ClientManager;
             clientManager.StartConnection();
 
-            LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_SOLO } };
+            LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_SOLO, (int)GameMode.Training } };
             SceneSwitcher.instance.LoadGlobalNetworkedScene("LoadingScene", loadParams);
         }
     }

@@ -15,14 +15,11 @@ MonoBehaviour:
   <Name>k__BackingField: Speedup
   <Description>k__BackingField: Provides the user with a permanent speed boost.
   <MaxLevel>k__BackingField: 5
-  <Cooldown>k__BackingField:
-  - 12
-  - 0
-  - 0
-  - 0
-  - 0
   statModifiers:
-  - modifiers: []
+  - modifiers:
+    - stat: 3
+      type: 1
+      value: 1.05
   - modifiers: []
   - modifiers: []
   - modifiers: []
