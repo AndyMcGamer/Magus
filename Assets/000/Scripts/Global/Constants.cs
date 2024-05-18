@@ -1,3 +1,4 @@
+
 namespace Magus.Global
 {
     public static class Constants
@@ -36,7 +37,7 @@ namespace Magus.Global
         /// </summary>
         public static readonly int MAX_ROUNDS = 5;
 
-        public static readonly float TRAINING_TIME = 90;
+        public static readonly float TRAINING_TIME = 90; // should be 90
         public static readonly float BATTLE_TIME = 300;
         public static readonly float MAX_TIME = 5999;
 
@@ -47,5 +48,8 @@ namespace Magus.Global
 
         public static readonly string PLAYER_ONE_TAG = "PlayerOne";
         public static readonly string PLAYER_TWO_TAG = "PlayerTwo";
+
+        public static readonly UnityEngine.Vector3 PLAYER_ONE_SPAWN = new(-8, 1, -8);
+        public static readonly UnityEngine.Vector3 PLAYER_TWO_SPAWN = new(8, 1, 8);
     }
 }

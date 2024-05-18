@@ -16,7 +16,7 @@ MonoBehaviour:
   <Description>k__BackingField: 
   <MaxLevel>k__BackingField: 1
   skillType: 0
-  projectilePrefab: {fileID: 7907540912251384645, guid: 6ed8235e90a17434597bd75f8631dfe4,
+  projectilePrefab: {fileID: 882575362378936157, guid: da33a8b1573fda9449ab6b004c646586,
     type: 3}
   <Cost>k__BackingField:
   - 0

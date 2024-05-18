@@ -15,21 +15,36 @@ namespace Magus.PlayerController
         [SerializeField] private ActiveSkillData[] activeSkills;
         [SerializeField] private List<PassiveSkillData> passiveSkills;
 
-        public void ActivateSkill(int skillNumber)
+        private float[] activeCooldowns;
+
+        private void Awake()
         {
-            ActivateActive(activeSkills[skillNumber - 1]);
+            activeCooldowns = new float[activeSkills.Length];
         }
 
-        private void ActivateActive(ActiveSkillData skillData)
+        private void Update()
         {
-            if (skillData == null) return;
+            for (int i = 0; i < activeCooldowns.Length; i++)
+            {
+                if (activeCooldowns[i] > 0)
+                {
+                    activeCooldowns[i] -= Time.deltaTime;
+                }
+            }
+        }
+
+        public void ActivateSkill(int skillNumber)
+        {
+            ActiveSkillData skillData = activeSkills[skillNumber - 1];
+            if (skillData == null || activeCooldowns[skillNumber - 1] > 0) return;
+            activeCooldowns[skillNumber - 1] = skillData.Cooldown[0]; // replace with proper level
             switch (skillData.skillType)
             {
                 case ActiveSkillType.Projectile:
                     playerAttack.CastProjectileSkill(skillData as ProjectileSkillData);
                     break;
                 case ActiveSkillType.Movement:
-                    
+
                     break;
                 case ActiveSkillType.Toggle:
                     break;

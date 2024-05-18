@@ -59,5 +59,7 @@ namespace Magus.Global
         }
 
         public static Vector3 ScaleBy(this Vector3 v, Vector3 other) => new Vector3(other.x * v.x, other.y * v.y, other.z * v.z);
+
+        public static string GetPlayerTag(int playerNumber) => playerNumber == 1 ? Constants.PLAYER_ONE_TAG : Constants.PLAYER_TWO_TAG;
     }
 }

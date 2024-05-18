@@ -10,7 +10,7 @@ namespace Magus.Skills
     {
         [field: SerializeField] public string Name { get; set; }
         [field: SerializeField, TextArea] public string Description { get; set; }
-        [field: SerializeField] public int MaxLevel { get; set; }
+        [field: SerializeField, Min(1)] public int MaxLevel { get; set; }
         public virtual float[] Cost { get; protected set; }
         public virtual float[] Cooldown { get; protected set; }
 

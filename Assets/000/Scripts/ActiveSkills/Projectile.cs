@@ -1,4 +1,7 @@
 using FishNet;
+using FishNet.Connection;
+using Magus.Game;
+using Magus.PlayerController;
 using Magus.Skills;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +11,8 @@ namespace Magus.ActiveSkills
 {
     public class Projectile : MonoBehaviour
     {
-        private Vector3 direction;
+        [SerializeField] private GameObject visual;
+
         private float passedTime = 0f;
         private float moveRate;
         private float lifetime;
@@ -16,11 +20,14 @@ namespace Magus.ActiveSkills
         public string playerTag;
         public float damage;
 
-        public void Initialize(ProjectileSkillData skillData, Vector3 direction, float passedTime, string playerTag, int skillLevel = 0)
+        public void Initialize(ProjectileSkillData skillData, float passedTime, string playerTag, int skillLevel = 0, bool showVisual = true)
         {
             this.passedTime = passedTime;
-            this.direction = direction;
             this.playerTag = playerTag;
+
+            gameObject.tag = playerTag;
+
+            visual.SetActive(showVisual);
 
             // replace skill level with global skill manager level in the future
             this.moveRate = skillData.moveRate[skillLevel];
@@ -66,8 +73,15 @@ namespace Magus.ActiveSkills
             {
                 if (InstanceFinder.IsServerStarted)
                 {
-
+                    if (other.TryGetComponent<PlayerCollisionHandler>(out var collisionHandler))
+                    {
+                        NetworkConnection conn = other.GetComponent<PlayerCollisionHandler>().Owner;
+                        GlobalPlayerController.instance.ChangePlayerHealth(conn, -damage);
+                        print(other.name);
+                    }
+                    
                 }
+                
                 Destroy(gameObject);
             }
         }

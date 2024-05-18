@@ -22,8 +22,11 @@ namespace Magus.PlayerController
                 playerInput.DeactivateInput();
                 enabled = false;
             }
+            else
+            {
+                playerInput.enabled = true;
+            }
         }
-
         public void OnMove(InputAction.CallbackContext value)
         {
             Vector2 input = value.ReadValue<Vector2>();

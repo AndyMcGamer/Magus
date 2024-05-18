@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7082387328892042449}
   - component: {fileID: 4974162872075294821}
   - component: {fileID: 3668955930712314718}
+  - component: {fileID: 6333813248288830105}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -67,6 +68,9 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
   - {fileID: 8673274490836643875}
+  - {fileID: 4974162872075294821}
+  - {fileID: 3668955930712314718}
+  - {fileID: 6333813248288830105}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
@@ -104,7 +108,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4ea9a254d1230469dc9f470968c21b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 7082387328892042449}
+  _networkObjectCache: {fileID: 7082387328892042449}
   roundNumber: 0
+  gameMode: 0
 --- !u!114 &3668955930712314718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,3 +125,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e8b3184e9fd00408dffc97da27b066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 2
+  _addedNetworkObject: {fileID: 7082387328892042449}
+  _networkObjectCache: {fileID: 7082387328892042449}
+  gameStage: 0
+--- !u!114 &6333813248288830105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158281664648010998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb9814aa416decd43a224c802a0478d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 3
+  _addedNetworkObject: {fileID: 7082387328892042449}
+  _networkObjectCache: {fileID: 7082387328892042449}
+  skillDatabase: {fileID: 11400000, guid: d896cdb255cac5245adae631fa87b53d, type: 2}

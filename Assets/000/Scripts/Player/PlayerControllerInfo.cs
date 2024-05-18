@@ -1,8 +1,10 @@
 using Cinemachine;
 using FishNet.Connection;
 using FishNet.Object;
+using Magus.Game;
 using Magus.Global;
 using Magus.Multiplayer;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,13 +34,21 @@ namespace Magus.PlayerController
             playerHUD.Init(this);
             skillManager.Init(this);
             playerAttack.Init(this);
+
+            GlobalPlayerController.instance.OnPlayerDeath += PlayerDeath;
+        }
+
+        private void OnDestroy()
+        {
+            GlobalPlayerController.instance.OnPlayerDeath -= PlayerDeath;
         }
 
         public override void OnStartClient()
         {
             base.OnStartClient();
-            gameObject.tag = ConnectionManager.instance.playerData[base.Owner] == 1 ? Constants.PLAYER_ONE_TAG : Constants.PLAYER_TWO_TAG;
-            playerCollider.enabled = false;
+            playerTag = HelperFunctions.GetPlayerTag(ConnectionManager.instance.playerData[base.Owner]);
+            gameObject.tag = playerTag;
+            playerCollider.tag = playerTag;
             if (!base.IsOwner)
             {
                 enabled = false;
@@ -53,7 +63,22 @@ namespace Magus.PlayerController
         [ServerRpc]
         private void SetTag(string tag)
         {
+            gameObject.tag = tag;
             playerCollider.tag = tag;
+        }
+
+        private void PlayerDeath(int playerNumber)
+        {
+            if (playerNumber == ConnectionManager.instance.playerData[base.Owner])
+            {
+                DespawnPlayer(gameObject);
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void DespawnPlayer(GameObject playerObject)
+        {
+            ServerManager.Despawn(playerObject);
         }
     }
 }

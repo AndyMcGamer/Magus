@@ -4,6 +4,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Magus.Game;
 using Magus.Global;
+using Magus.Multiplayer;
 using Magus.SceneManagement;
 using System;
 using System.Collections;
@@ -101,6 +102,7 @@ namespace Magus.SceneSpecific
                 foreach (var conn in ServerManager.Clients.Values)
                 {
                     SceneSwitcher.instance.LoadStackedNetworkScene(openScenes[j].handle, conn);
+                    GlobalPlayerController.instance.AddTrainingRoom(ConnectionManager.instance.playerData[conn], openScenes[j]);
                     ++j;
                 }
                 MatchController.instance.StartMatch(gameMode);
@@ -117,6 +119,7 @@ namespace Magus.SceneSpecific
             {
                 if(next <= 0 && !activatedSceneChange)
                 {
+                    GlobalPlayerController.instance.ClearTrainingRooms();
                     SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, ReplaceOption.None);
                     SceneSwitcher.instance.PreloadNetworkScenes("TrainingRoom");
                     activatedSceneChange = true;

@@ -1,6 +1,7 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Magus.Global;
+using Magus.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,16 +56,31 @@ namespace Magus.Game
                     switch (gameStage)
                     {
                         case GameStage.Training:
+                            SwitchToBattle();
+                            break;
                         case GameStage.Battle:
                             changeStageTimer = true;
+                            SetStageTimer(Constants.TRAINING_TIME);
                             break;
                         case GameStage.SuddenDeath:
                             changeStageTimer = false;
+                            SetStageTimer(0.01f);
                             break;
                     }
                 }
             }
         }
+
+        private void SwitchToBattle()
+        {
+            changeStageTimer = true;
+            GlobalPlayerController.instance.SetPlayerHealth(1, 100);
+            GlobalPlayerController.instance.SetPlayerHealth(2, 100);
+            SetStageTimer(Constants.BATTLE_TIME);
+            SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, FishNet.Managing.Scened.ReplaceOption.All);
+            SceneSwitcher.instance.LoadGlobalNetworkedScene("BattleScene", true, FishNet.Managing.Scened.ReplaceOption.None);
+        }
+
 
         [Server]
         private void SetStageTimer(float time)
@@ -79,6 +95,7 @@ namespace Magus.Game
                 case GameMode.Training:
                     changeStageTimer = false;
                     SetStageTimer(Constants.MAX_TIME);
+                    
                     break;
                 case GameMode.Standard:
                     changeStageTimer = true;
