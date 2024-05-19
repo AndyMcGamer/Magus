@@ -2,12 +2,11 @@ using FishNet;
 using FishNet.Connection;
 using Magus.Game;
 using Magus.PlayerController;
-using Magus.Skills;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Magus.ActiveSkills
+namespace Magus.Skills.ActiveSkills
 {
     public class Projectile : MonoBehaviour
     {

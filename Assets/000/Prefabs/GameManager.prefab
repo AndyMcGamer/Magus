@@ -91,7 +91,7 @@ MonoBehaviour:
   _ownerInterpolation: 1
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 1
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -144,4 +144,4 @@ MonoBehaviour:
   _componentIndexCache: 3
   _addedNetworkObject: {fileID: 7082387328892042449}
   _networkObjectCache: {fileID: 7082387328892042449}
-  skillDatabase: {fileID: 11400000, guid: d896cdb255cac5245adae631fa87b53d, type: 2}
+  skillDatabase: {fileID: 11400000, guid: 55dd914be13c0d2408cd2864ab390c14, type: 2}

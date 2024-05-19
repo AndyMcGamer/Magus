@@ -1,4 +1,5 @@
 using Magus.Global;
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Magus.Skills
     public abstract class SkillData : ScriptableObject
     {
         [field: SerializeField] public string Name { get; set; }
+        [field: SerializeField, ShowAssetPreview] public Sprite Icon { get; set; }
         [field: SerializeField, TextArea] public string Description { get; set; }
         [field: SerializeField, Min(1)] public int MaxLevel { get; set; }
         public virtual float[] Cost { get; protected set; }

@@ -1,8 +1,10 @@
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-namespace Magus.Skills
+namespace Magus.Skills.SkillTree
 {
     [System.Serializable]
     public class SkillPrerequisite
@@ -11,10 +13,21 @@ namespace Magus.Skills
         [Min(1)] public int requiredLevel;
     }
 
-    [System.Serializable]
-    public class SkillNode
+    [CreateAssetMenu(fileName = "New SkillNode", menuName = "Magus/Skills/SkillNode")]
+    public class SkillNode : ScriptableObject
     {
         public SkillData skillData;
-        public List<SkillPrerequisite> prerequisites;
+        [ReorderableList] public List<SkillPrerequisite> prerequisites;
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if(skillData != null && this.name != skillData.Name)
+            {
+                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(this), skillData.Name);
+                AssetDatabase.SaveAssetIfDirty(this);
+            }
+        }
+#endif
     }
 }

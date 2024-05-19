@@ -1,9 +1,9 @@
 using FishNet.Object;
-using Magus.ActiveSkills;
+using Magus.Skills;
 using Magus.Game;
 using Magus.Global;
 using Magus.Multiplayer;
-using Magus.Skills;
+using Magus.Skills.ActiveSkills;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,6 @@ namespace Magus.PlayerController
     {
         public void CastProjectileSkill(ProjectileSkillData skillData)
         {
-            print("casted");
             Vector3 position = transform.position + Vector3.up * 0.5f;
             Vector3 direction = playerInfo.lastMove;
 
@@ -48,7 +47,7 @@ namespace Magus.PlayerController
 
             passedTime = Mathf.Min(Constants.PROJECTILE_MAX_PASSED_TIME / 2f, passedTime);
 
-            ProjectileSkillData skillData = GlobalPlayerController.instance.skillDatabase.FindByName<ProjectileSkillData>(skillName);
+            ProjectileSkillData skillData = GlobalPlayerController.instance.skillDatabase.FindDataByName<ProjectileSkillData>(skillName);
 
             SpawnProjectile(playerNumber, skillData, position, direction, passedTime, GlobalPlayerController.instance.trainingRooms[playerNumber]);
             FireProjectileObservers(skillName, position, direction, tick, playerNumber);
@@ -60,7 +59,7 @@ namespace Magus.PlayerController
             float passedTime = (float)base.TimeManager.TimePassed(tick, false);
             passedTime = Mathf.Min(Constants.PROJECTILE_MAX_PASSED_TIME, passedTime);
 
-            ProjectileSkillData skillData = GlobalPlayerController.instance.skillDatabase.FindByName<ProjectileSkillData>(skillName);
+            ProjectileSkillData skillData = GlobalPlayerController.instance.skillDatabase.FindDataByName<ProjectileSkillData>(skillName);
             SpawnProjectile(playerNumber, skillData, position, direction, passedTime);
         }
     }
