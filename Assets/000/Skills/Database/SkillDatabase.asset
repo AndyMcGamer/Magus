@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skills:
   - {fileID: 11400000, guid: f71f3d411a1d9b64da21e1a997cecda0, type: 2}
+  - {fileID: 11400000, guid: f67d822a2ecf97445a9bd8c41d70b2ee, type: 2}

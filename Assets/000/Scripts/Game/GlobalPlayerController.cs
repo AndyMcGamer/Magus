@@ -5,6 +5,7 @@ using Magus.Global;
 using Magus.Multiplayer;
 using Magus.Skills;
 using Magus.Skills.SkillTree;
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,15 +23,41 @@ namespace Magus.Game
         private readonly SyncVar<float> health_PlayerOne = new(new SyncTypeSettings(0f));
         private readonly SyncVar<float> health_PlayerTwo = new(new SyncTypeSettings(0f));
 
-        private readonly SyncDictionary<string, int> skillStatus_PlayerOne = new();
-        private readonly SyncDictionary<string, int> skillStatus_PlayerTwo = new();
+        public float GetCurrentHealth(int playerNumber) => playerNumber == 1 ? health_PlayerOne.Value : health_PlayerTwo.Value;
 
         public event Action<int> OnPlayerDeath;
         public event Action<int, float> OnPlayerHealthChange;
 
+        private readonly SyncDictionary<string, int> skillStatus_PlayerOne = new();
+        private readonly SyncDictionary<string, int> skillStatus_PlayerTwo = new();
+
+        public Dictionary<string, int> GetSkillStatus(int playerNumber) => (playerNumber == 1) ? skillStatus_PlayerOne.Collection : skillStatus_PlayerTwo.Collection;
+
+        /// <summary>
+        /// Update Skill: playerNumber, skillName
+        /// </summary>
         public event Action<int, string> OnSkillUpdate;
 
+        /// <summary>
+        /// Skill Added: playerNumber, skillName
+        /// </summary>
+        public event Action<int, string> OnSkillAdded;
+
+        /// <summary>
+        /// Skill Removed: playerNumber, skillName, skillLevel
+        /// </summary>
+        public event Action<int, string, int> OnSkillRemoved;
+
+        private readonly SyncVar<int> skillPoints_PlayerOne = new();
+        private readonly SyncVar<int> skillPoints_PlayerTwo = new();
+
+        public int GetSkillPoints(int playerNumber) => playerNumber == 1 ? skillPoints_PlayerOne.Value : skillPoints_PlayerTwo.Value;
+
+        public event Action<int> OnSkillPointsChanged;
+
         public Dictionary<int, Scene> trainingRooms;
+
+        [ReadOnly] public string[] hotbarSkills;
 
         private void Awake()
         {
@@ -41,13 +68,20 @@ namespace Magus.Game
             }
             instance = this;
 
+            skillDatabase.Initialize();
+
             trainingRooms = new();
+
+            hotbarSkills = new string[Constants.MAX_HOTBAR_SKILLS];
 
             health_PlayerOne.OnChange += Health_PlayerOne_OnChange;
             health_PlayerTwo.OnChange += Health_PlayerTwo_OnChange;
 
             skillStatus_PlayerOne.OnChange += SkillStatus_PlayerOne_OnChange;
             skillStatus_PlayerTwo.OnChange += SkillStatus_PlayerTwo_OnChange;
+
+            skillPoints_PlayerOne.OnChange += SkillPoints_PlayerOne_OnChange;
+            skillPoints_PlayerTwo.OnChange += SkillPoints_PlayerTwo_OnChange;
         }
 
         private void OnDestroy()
@@ -57,9 +91,12 @@ namespace Magus.Game
 
             skillStatus_PlayerOne.OnChange -= SkillStatus_PlayerOne_OnChange;
             skillStatus_PlayerTwo.OnChange -= SkillStatus_PlayerTwo_OnChange;
+
+            skillPoints_PlayerOne.OnChange -= SkillPoints_PlayerOne_OnChange;
+            skillPoints_PlayerTwo.OnChange -= SkillPoints_PlayerTwo_OnChange;
         }
 
-        public Dictionary<string, int> GetSkillStatus(int playerNumber) => (playerNumber == 1) ? skillStatus_PlayerOne.Collection : skillStatus_PlayerTwo.Collection;
+        
 
         [ServerRpc(RequireOwnership = false)]
         public void UpdateSkillStatus(int playerNumber, string skillName, bool addingPoint)
@@ -74,7 +111,7 @@ namespace Magus.Game
                 }
                 else if(addingPoint)
                 {
-                    skillStatus_PlayerOne[skillName] = 1;
+                    skillStatus_PlayerOne.Add(skillName, 1);
                 }
             }
             else if(playerNumber == 2)
@@ -86,23 +123,39 @@ namespace Magus.Game
                 }
                 else if (addingPoint)
                 {
-                    skillStatus_PlayerTwo[skillName] = 1;
+                    skillStatus_PlayerTwo.Add(skillName, 1);
                 }
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void RemoveSkill(int playerNumber, string skillName)
+        {
+            if(playerNumber == 1 && skillStatus_PlayerOne.ContainsKey(skillName))
+            {
+                skillStatus_PlayerOne.Remove(skillName);
+            }
+            else if(playerNumber == 2 && skillStatus_PlayerTwo.ContainsKey(skillName))
+            {
+                skillStatus_PlayerTwo.Remove(skillName);
             }
         }
 
         private void SkillStatus_PlayerOne_OnChange(SyncDictionaryOperation op, string key, int value, bool asServer)
         {
-            if(!asServer) print(op);
+            if (asServer) return;
             switch (op)
             {
                 case SyncDictionaryOperation.Add:
+                    OnSkillAdded?.Invoke(1, key);
                     break;
                 case SyncDictionaryOperation.Clear:
                     break;
                 case SyncDictionaryOperation.Remove:
+                    OnSkillRemoved?.Invoke(1, key, value);
                     break;
                 case SyncDictionaryOperation.Set:
+                    OnSkillUpdate?.Invoke(1, key);
                     break;
                 case SyncDictionaryOperation.Complete:
                     break;
@@ -111,8 +164,36 @@ namespace Magus.Game
 
         private void SkillStatus_PlayerTwo_OnChange(SyncDictionaryOperation op, string key, int value, bool asServer)
         {
-            
+            if (asServer) return;
+            switch (op)
+            {
+                case SyncDictionaryOperation.Add:
+                    OnSkillAdded?.Invoke(2, key);
+                    break;
+                case SyncDictionaryOperation.Clear:
+                    break;
+                case SyncDictionaryOperation.Remove:
+                    OnSkillRemoved?.Invoke(2, key, value);
+                    break;
+                case SyncDictionaryOperation.Set:
+                    OnSkillUpdate?.Invoke(2, key);
+                    break;
+                case SyncDictionaryOperation.Complete:
+                    break;
+            }
         }
+
+        private void SkillPoints_PlayerOne_OnChange(int prev, int next, bool asServer)
+        {
+            if (asServer) return;
+            OnSkillPointsChanged?.Invoke(1);
+        }
+        private void SkillPoints_PlayerTwo_OnChange(int prev, int next, bool asServer)
+        {
+            if (asServer) return;
+            OnSkillPointsChanged?.Invoke(2);
+        }
+
 
         private void Health_PlayerOne_OnChange(float prev, float next, bool asServer)
         {
@@ -201,6 +282,32 @@ namespace Magus.Game
         public void ClearTrainingRooms()
         {
             trainingRooms.Clear();
+        }
+
+        [Server]
+        public void SetSkillPoints(int playerNumber, int amount)
+        {
+            if(playerNumber == 1)
+            {
+                skillPoints_PlayerOne.Value = amount;
+            }
+            else if(playerNumber == 2)
+            {
+                skillPoints_PlayerTwo.Value = amount;
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void ChangeSkillPoints(int playerNumber, int amount)
+        {
+            if (playerNumber == 1)
+            {
+                skillPoints_PlayerOne.Value += amount;
+            }
+            else if (playerNumber == 2)
+            {
+                skillPoints_PlayerTwo.Value += amount;
+            }
         }
     }
 }

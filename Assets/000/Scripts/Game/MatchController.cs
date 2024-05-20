@@ -35,15 +35,26 @@ namespace Magus.Game
             RoundController.instance.StartRound();
             SetRoundNumber(roundNumber);
             SetGameMode(mode);
+
+            switch (gameMode)
+            {
+                case GameMode.Training:
+                    GlobalPlayerController.instance.SetSkillPoints(1, 999);
+                    break;
+                case GameMode.Standard:
+                    GlobalPlayerController.instance.SetSkillPoints(1, 10);
+                    GlobalPlayerController.instance.SetSkillPoints(2, 10);
+                    break;
+            }
         }
 
-        [ObserversRpc]
+        [ObserversRpc(ExcludeServer = true)]
         private void SetRoundNumber(int roundNumber)
         {
             this.roundNumber = roundNumber;
         }
 
-        [ObserversRpc]
+        [ObserversRpc(ExcludeServer = true)]
         private void SetGameMode(GameMode gameMode)
         {
             this.gameMode = gameMode;

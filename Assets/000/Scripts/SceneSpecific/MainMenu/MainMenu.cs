@@ -103,5 +103,10 @@ namespace Magus.SceneSpecific
         {
             trainingStarter.StartTrainingRoom();
         }
+
+        public void QuitGame()
+        {
+            Application.Quit();
+        }
     }
 }

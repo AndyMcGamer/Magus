@@ -77,7 +77,10 @@ namespace Magus.Game
             GlobalPlayerController.instance.SetPlayerHealth(1, 100);
             GlobalPlayerController.instance.SetPlayerHealth(2, 100);
             SetStageTimer(Constants.BATTLE_TIME);
-            SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, FishNet.Managing.Scened.ReplaceOption.All);
+            gameStage = GameStage.Battle;
+            SetGameStage(gameStage);
+            SceneSwitcher.instance.LoadGlobalNetworkedScene("HealthBars", false, FishNet.Managing.Scened.ReplaceOption.All);
+            SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, FishNet.Managing.Scened.ReplaceOption.None);
             SceneSwitcher.instance.LoadGlobalNetworkedScene("BattleScene", true, FishNet.Managing.Scened.ReplaceOption.None);
         }
 
@@ -90,12 +93,13 @@ namespace Magus.Game
 
         public void StartRound()
         {
+            gameStage = GameStage.Training;
+            SetGameStage(gameStage);
             switch(MatchController.instance.gameMode)
             {
                 case GameMode.Training:
                     changeStageTimer = false;
                     SetStageTimer(Constants.MAX_TIME);
-                    
                     break;
                 case GameMode.Standard:
                     changeStageTimer = true;
@@ -113,6 +117,12 @@ namespace Magus.Game
                     stageTimer.Value -= Time.deltaTime;
                 }
             }
+        }
+
+        [ObserversRpc(ExcludeServer = true)]
+        private void SetGameStage(GameStage stage)
+        {
+            gameStage = stage;
         }
     }
 }

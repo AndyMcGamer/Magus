@@ -1,5 +1,8 @@
+using Magus.Game;
+using Magus.Multiplayer;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Magus.PlayerController
@@ -10,6 +13,8 @@ namespace Magus.PlayerController
         [SerializeField] private GameObject skillScreen;
         [SerializeField] private GameObject statScreen;
 
+        [SerializeField] private TextMeshProUGUI skillPointDisplay;
+
         private bool showingSkillScreen;
         private bool showingStatScreen;
 
@@ -19,6 +24,30 @@ namespace Magus.PlayerController
             statScreen.SetActive(false);
             showingSkillScreen = false;
             showingStatScreen = false;
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            if (!base.IsOwner) return;
+            GlobalPlayerController.instance.OnSkillPointsChanged += OnSkillPointsChanged;
+            SetSkillPointText(GlobalPlayerController.instance.GetSkillPoints(ConnectionManager.instance.playerData[base.LocalConnection]));
+        }
+
+        private void OnDestroy()
+        {
+            GlobalPlayerController.instance.OnSkillPointsChanged -= OnSkillPointsChanged;
+        }
+
+        private void OnSkillPointsChanged(int playerNumber)
+        {
+            if (playerNumber != ConnectionManager.instance.playerData[base.LocalConnection]) return;
+            SetSkillPointText(GlobalPlayerController.instance.GetSkillPoints(playerNumber));
+        }
+
+        private void SetSkillPointText(int skillPoints)
+        {
+            skillPointDisplay.text = $"Skill Points: {skillPoints}";
         }
 
         public void ToggleSkillScreen()

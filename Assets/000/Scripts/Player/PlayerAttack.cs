@@ -28,13 +28,13 @@ namespace Magus.PlayerController
         private void SpawnProjectile(int playerNumber, ProjectileSkillData skillData, Vector3 position, Vector3 direction, float timePassed)
         {
             var spawnedProjectile = Instantiate(skillData.projectilePrefab, position, Quaternion.LookRotation(direction)).GetComponent<Projectile>();
-            spawnedProjectile.Initialize(skillData, timePassed, HelperFunctions.GetPlayerTag(playerNumber));
+            spawnedProjectile.Initialize(skillData, timePassed, playerNumber);
         }
 
         private void SpawnProjectile(int playerNumber, ProjectileSkillData skillData, Vector3 position, Vector3 direction, float timePassed, Scene scene)
         {
             var spawnedProjectile = Instantiate(skillData.projectilePrefab, position, Quaternion.LookRotation(direction)).GetComponent<Projectile>();
-            spawnedProjectile.Initialize(skillData, timePassed, HelperFunctions.GetPlayerTag(playerNumber), showVisual: scene == UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+            spawnedProjectile.Initialize(skillData, timePassed, playerNumber, showVisual: scene == UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(spawnedProjectile.gameObject, scene);
             
         }
@@ -49,7 +49,18 @@ namespace Magus.PlayerController
 
             ProjectileSkillData skillData = GlobalPlayerController.instance.skillDatabase.FindDataByName<ProjectileSkillData>(skillName);
 
-            SpawnProjectile(playerNumber, skillData, position, direction, passedTime, GlobalPlayerController.instance.trainingRooms[playerNumber]);
+            switch (RoundController.instance.gameStage)
+            {
+                case GameStage.Training:
+                    SpawnProjectile(playerNumber, skillData, position, direction, passedTime, GlobalPlayerController.instance.trainingRooms[playerNumber]);
+                    break;
+                case GameStage.Battle:
+                case GameStage.SuddenDeath:
+                    SpawnProjectile(playerNumber, skillData, position, direction, passedTime);
+                    break;
+            }
+
+            
             FireProjectileObservers(skillName, position, direction, tick, playerNumber);
         }
 

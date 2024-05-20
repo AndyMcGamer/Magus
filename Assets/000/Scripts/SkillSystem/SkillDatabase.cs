@@ -12,6 +12,12 @@ namespace Magus.Skills.SkillTree
     public class SkillDatabase : ScriptableObject
     {
         public HashSet<SkillNode> skills;
+        [Expandable, ReorderableList, SerializeField] private List<SkillNode> _skills;
+
+        public void Initialize()
+        {
+            skills = _skills.ToHashSet();
+        }
 
         public T FindDataByName<T>(string name) where T : SkillData
         {
@@ -26,14 +32,11 @@ namespace Magus.Skills.SkillTree
         }
 
 #if UNITY_EDITOR
-        [Expandable, ReorderableList, SerializeField]
-        private List<SkillNode> _skills;
         private readonly string subFolderName = "/Prerequisites";
 
         [Button("Create SkillNode")]
         private void CreateNode()
         {
-            //var newNode = ScriptableObject.CreateInstance<SkillNode>();
             var prerequisiteDirectory = new DirectoryInfo(Directory.GetParent(AssetDatabase.GetAssetPath(this)) + subFolderName);
             if (!prerequisiteDirectory.Exists)
             {
@@ -77,9 +80,26 @@ namespace Magus.Skills.SkillTree
             AssetDatabase.SaveAssets();
         }
 
+        [Button("Rebuild Postrequisites")]
+        private void RebuildPostRequisites()
+        {
+            foreach (var skillNode in skills)
+            {
+                skillNode.postrequisites = new();
+                foreach (var prereq in skillNode.prerequisites)
+                {
+                    SkillNode sn = skills.First(x => x.skillData == prereq.skill);
+                    string skillName = skillNode.skillData.name;
+                    sn.postrequisites.Add(skillName);
+                }
+            }
+            AssetDatabase.SaveAssets();
+        }
+
         private void OnValidate()
         {
             skills = _skills.ToHashSet();
+            RebuildPostRequisites();
         }
 #endif
     }

@@ -1,6 +1,7 @@
 using FishNet;
 using FishNet.Connection;
 using Magus.Game;
+using Magus.Global;
 using Magus.PlayerController;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,10 @@ namespace Magus.Skills.ActiveSkills
     public class Projectile : MonoBehaviour
     {
         [SerializeField] private GameObject visual;
+        [SerializeField] private Collider col;
+
+        [SerializeField] private bool destroyImmediate = true;
+
 
         private float passedTime = 0f;
         private float moveRate;
@@ -19,8 +24,10 @@ namespace Magus.Skills.ActiveSkills
         public string playerTag;
         public float damage;
 
-        public void Initialize(ProjectileSkillData skillData, float passedTime, string playerTag, int skillLevel = 0, bool showVisual = true)
+        public void Initialize(ProjectileSkillData skillData, float passedTime, int playerNumber, bool showVisual = true)
         {
+            string playerTag = HelperFunctions.GetPlayerTag(playerNumber);
+
             this.passedTime = passedTime;
             this.playerTag = playerTag;
 
@@ -29,6 +36,9 @@ namespace Magus.Skills.ActiveSkills
             visual.SetActive(showVisual);
 
             // replace skill level with global skill manager level in the future
+
+            int skillLevel = GlobalPlayerController.instance.GetSkillStatus(playerNumber)[skillData.Name] - 1;
+
             this.moveRate = skillData.moveRate[skillLevel];
             this.lifetime = skillData.lifetime[skillLevel];
             this.damage = skillData.damage[skillLevel];
@@ -76,12 +86,12 @@ namespace Magus.Skills.ActiveSkills
                     {
                         NetworkConnection conn = other.GetComponent<PlayerCollisionHandler>().Owner;
                         GlobalPlayerController.instance.ChangePlayerHealth(conn, -damage);
-                        print(other.name);
+                        col.enabled = false;
                     }
                     
                 }
                 
-                Destroy(gameObject);
+                if(destroyImmediate) Destroy(gameObject);
             }
         }
     }

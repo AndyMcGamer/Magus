@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Magus.Game;
+using Magus.Multiplayer;
 using Magus.PlayerController;
 using Magus.Skills.SkillTree;
+using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,13 +19,21 @@ namespace Magus.Skills
         [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Image spriteBorder;
+        [SerializeField] private GameObject disableMask;
+        [SerializeField, Foldout("Upgrade Buttons")] private Button addButton;
+        [SerializeField, Foldout("Upgrade Buttons")] private Button subtractButton;
 
         [Header("Settings")]
-        [SerializeField] private Color regularBorderColor;
-        [SerializeField] private Color activatedBorderColor;
+        [SerializeField, Foldout("Border")] private Color regularBorderColor;
+        [SerializeField, Foldout("Border")] private Color activatedBorderColor;
+        [SerializeField, Foldout("Level Text")] private Color regularTextColor;
+        [SerializeField, Foldout("Level Text")] private Color disabledTextColor;
+
+        private bool unlocked;
 
         private void Awake()
         {
+            unlocked = false;
             ToggleBorder(false);
             playerInfo = GetComponentInParent<PlayerControllerInfo>();
         }
@@ -31,6 +41,7 @@ namespace Magus.Skills
         private void OnEnable()
         {
             playerInfo.skillManager.OnSkillUpdate += SkillManager_OnSkillUpdate;
+            playerInfo.skillManager.PropogateSkillUpdate(skillNode.skillData.Name);
         }
 
         private void OnDisable()
@@ -38,9 +49,34 @@ namespace Magus.Skills
             playerInfo.skillManager.OnSkillUpdate -= SkillManager_OnSkillUpdate;
         }
 
-        private void SkillManager_OnSkillUpdate(int playerNumber)
-        {
-            CheckPrerequisites(playerNumber);
+        private void SkillManager_OnSkillUpdate(int playerNumber, string skillName)
+        {   
+            if (skillName != skillNode.skillData.Name) return;
+
+            var ownedSkills = GlobalPlayerController.instance.GetSkillStatus(playerNumber);
+
+            ownedSkills.TryGetValue(skillName, out int skillLevel);
+
+            levelText.text = $"{skillLevel}/{skillNode.skillData.MaxLevel}";
+
+
+            bool previous = unlocked;
+            unlocked = CheckPrerequisites(playerNumber);
+
+            if(unlocked != previous && !unlocked)
+            {
+                GlobalPlayerController.instance.RemoveSkill(playerNumber, skillName);
+            }
+
+            ToggleLevelText(unlocked);
+            ToggleUpgradeButtons(playerNumber, unlocked, skillLevel);
+            ToggleDisableMask(unlocked);
+
+            // Go down connected nodes
+            foreach (var postReq in skillNode.postrequisites)
+            {
+                playerInfo.skillManager.PropogateSkillUpdate(postReq);
+            }
         }
 
         private bool CheckPrerequisites(int playerNumber)
@@ -49,7 +85,8 @@ namespace Magus.Skills
             foreach (var prereq in skillNode.prerequisites)
             {
                 string skillName = prereq.skill.Name;
-                int skillLevel = GlobalPlayerController.instance.GetSkillStatus(playerNumber)[skillName];
+                var skillStatus = GlobalPlayerController.instance.GetSkillStatus(playerNumber);
+                skillStatus.TryGetValue(skillName, out int skillLevel);
                 if (skillLevel < prereq.requiredLevel)
                 {
                     passed = false;
@@ -67,6 +104,23 @@ namespace Magus.Skills
         public void ToggleBorder(bool activated)
         {
             spriteBorder.color = activated ? activatedBorderColor : regularBorderColor;
+        }
+
+        private void ToggleLevelText(bool activated)
+        {
+            levelText.color = activated ? regularTextColor : disabledTextColor;
+        }
+
+        private void ToggleUpgradeButtons(int playerNumber, bool activated, int level)
+        {
+            bool inTraining = RoundController.instance.gameStage == GameStage.Training;
+            addButton.interactable = activated && level < skillNode.skillData.MaxLevel && GlobalPlayerController.instance.GetSkillPoints(playerNumber) > 0 && inTraining;
+            subtractButton.interactable = activated && level > 0 && inTraining;
+        }
+
+        private void ToggleDisableMask(bool activated)
+        {
+            disableMask.SetActive(!activated);
         }
 
 #if UNITY_EDITOR

@@ -28,6 +28,10 @@ namespace Magus.PlayerController
                 characterController.enabled = false;
                 enabled = false;
             }
+            else
+            {
+                enabled = true;
+            }
         }
 
         public void OnMove(Vector2 input)

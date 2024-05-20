@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 964a5134e59bf0b4c8940161e9ebc52e, type: 3}
-  m_Name: Bolt
+  m_Name: Slash
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Bolt
-  <Icon>k__BackingField: {fileID: 21300000, guid: 1d81636db7dcc5642bfdb6928598ffbd,
+  <Name>k__BackingField: Slash
+  <Icon>k__BackingField: {fileID: 21300000, guid: 51f771c76ccdea54187db502a06b2f3f,
     type: 3}
   <Description>k__BackingField: 
   <MaxLevel>k__BackingField: 10
   skillType: 0
-  projectilePrefab: {fileID: 882575362378936157, guid: da33a8b1573fda9449ab6b004c646586,
+  projectilePrefab: {fileID: 882575362378936157, guid: b60cbb2c02d606946a811b39fbbb55fa,
     type: 3}
   <Cost>k__BackingField:
   - 0
@@ -32,46 +32,46 @@ MonoBehaviour:
   - 0
   - 0
   <Cooldown>k__BackingField:
-  - 0.5
-  - 0.5
-  - 0.5
-  - 0.4
-  - 0.3
-  - 0.3
-  - 0.3
-  - 0.3
-  - 0.3
-  - 0.3
+  - 5
+  - 4
+  - 4
+  - 3.7
+  - 3.2
+  - 3
+  - 2.7
+  - 2.5
+  - 2.3
+  - 2
   damage:
-  - 10
-  - 15
-  - 15
-  - 16
-  - 18
-  - 19
-  - 20
-  - 21
-  - 22
   - 25
+  - 25
+  - 25
+  - 25
+  - 25
+  - 30
+  - 30
+  - 30
+  - 30
+  - 30
   moveRate:
-  - 15
-  - 15
-  - 15
-  - 15
-  - 15
-  - 15
-  - 20
-  - 20
-  - 20
-  - 25
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
   lifetime:
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1.5
-  - 1.5
-  - 1.5
-  - 2
-  - 2
-  - 2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.3
+  - 0.3
+  - 0.3
+  - 0.3
+  - 0.3

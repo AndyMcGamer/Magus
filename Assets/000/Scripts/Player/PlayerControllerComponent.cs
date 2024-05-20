@@ -11,7 +11,10 @@ namespace Magus.PlayerController
         public override void OnStartClient()
         {
             base.OnStartClient();
-            if (!base.IsOwner) { enabled = false; }
+            if (!base.IsOwner) 
+            {
+                enabled = false;
+            }
         }
 
         public void Init(PlayerControllerInfo playerInfoManager)

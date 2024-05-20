@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BasicMovespeed
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Speedup
+  <Icon>k__BackingField: {fileID: 0}
   <Description>k__BackingField: Provides the user with a permanent speed boost.
   <MaxLevel>k__BackingField: 5
   statModifiers:
