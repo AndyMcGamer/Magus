@@ -15,6 +15,8 @@ namespace Magus.PlayerController
     {
         [Header("References")]
         public InputProcessor inputProcessor;
+        public PlayerStateManager stateManager;
+        public PlayerRotation playerRotation;
         public PlayerMovement movement;
         public PlayerHUD playerHUD;
         public PlayerSkillManager skillManager;
@@ -30,6 +32,8 @@ namespace Magus.PlayerController
         private void Awake()
         {
             inputProcessor.Init(this);
+            stateManager.Init(this);
+            playerRotation.Init(this);
             movement.Init(this);
             playerHUD.Init(this);
             skillManager.Init(this);

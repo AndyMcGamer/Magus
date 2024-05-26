@@ -10,6 +10,7 @@ namespace Magus.PlayerController
     public class PlayerHUD : PlayerControllerComponent
     {
         [Header("References")]
+        [SerializeField] private GameObject hud;
         [SerializeField] private GameObject skillScreen;
         [SerializeField] private GameObject statScreen;
 
@@ -30,12 +31,14 @@ namespace Magus.PlayerController
         {
             base.OnStartClient();
             if (!base.IsOwner) return;
+            hud.SetActive(true);
             GlobalPlayerController.instance.OnSkillPointsChanged += OnSkillPointsChanged;
             SetSkillPointText(GlobalPlayerController.instance.GetSkillPoints(ConnectionManager.instance.playerData[base.LocalConnection]));
         }
 
         private void OnDestroy()
         {
+            if (!base.IsOwner) return;
             GlobalPlayerController.instance.OnSkillPointsChanged -= OnSkillPointsChanged;
         }
 

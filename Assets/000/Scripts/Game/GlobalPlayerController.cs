@@ -10,7 +10,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace Magus.Game
 {
@@ -58,6 +60,7 @@ namespace Magus.Game
         public Dictionary<int, Scene> trainingRooms;
 
         [ReadOnly] public string[] hotbarSkills;
+        public event Action<int> OnHotbarUpdated;
 
         private void Awake()
         {
@@ -94,51 +97,6 @@ namespace Magus.Game
 
             skillPoints_PlayerOne.OnChange -= SkillPoints_PlayerOne_OnChange;
             skillPoints_PlayerTwo.OnChange -= SkillPoints_PlayerTwo_OnChange;
-        }
-
-        
-
-        [ServerRpc(RequireOwnership = false)]
-        public void UpdateSkillStatus(int playerNumber, string skillName, bool addingPoint)
-        {
-            int pointChange = addingPoint ? 1 : -1;
-            if(playerNumber == 1)
-            {
-                if (skillStatus_PlayerOne.ContainsKey(skillName))
-                {
-                    skillStatus_PlayerOne[skillName] += pointChange;
-                    if (skillStatus_PlayerOne[skillName] <= 0) skillStatus_PlayerOne.Remove(skillName);
-                }
-                else if(addingPoint)
-                {
-                    skillStatus_PlayerOne.Add(skillName, 1);
-                }
-            }
-            else if(playerNumber == 2)
-            {
-                if (skillStatus_PlayerTwo.ContainsKey(skillName))
-                {
-                    skillStatus_PlayerTwo[skillName] += pointChange;
-                    if (skillStatus_PlayerTwo[skillName] <= 0) skillStatus_PlayerTwo.Remove(skillName);
-                }
-                else if (addingPoint)
-                {
-                    skillStatus_PlayerTwo.Add(skillName, 1);
-                }
-            }
-        }
-
-        [ServerRpc(RequireOwnership = false)]
-        public void RemoveSkill(int playerNumber, string skillName)
-        {
-            if(playerNumber == 1 && skillStatus_PlayerOne.ContainsKey(skillName))
-            {
-                skillStatus_PlayerOne.Remove(skillName);
-            }
-            else if(playerNumber == 2 && skillStatus_PlayerTwo.ContainsKey(skillName))
-            {
-                skillStatus_PlayerTwo.Remove(skillName);
-            }
         }
 
         private void SkillStatus_PlayerOne_OnChange(SyncDictionaryOperation op, string key, int value, bool asServer)
@@ -222,6 +180,66 @@ namespace Magus.Game
                 {
                     OnPlayerDeath?.Invoke(2);
                 }
+            }
+        }
+
+        public void UpdateHotbar(int hotbarIndex)
+        {
+            OnHotbarUpdated?.Invoke(hotbarIndex);
+        }
+
+        public void SwapSkills(int index1, int index2)
+        {
+            (hotbarSkills[index1], hotbarSkills[index2]) = (hotbarSkills[index2], hotbarSkills[index1]);
+            OnHotbarUpdated?.Invoke(index1);
+            OnHotbarUpdated?.Invoke(index2);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void UpdateSkillStatus(int playerNumber, string skillName, bool addingPoint)
+        {
+            int pointChange = addingPoint ? 1 : -1;
+            if (playerNumber == 1)
+            {
+                if (skillStatus_PlayerOne.ContainsKey(skillName))
+                {
+                    skillStatus_PlayerOne[skillName] += pointChange;
+                    if (skillStatus_PlayerOne[skillName] <= 0)
+                    {
+                        skillStatus_PlayerOne.Remove(skillName);
+                    }
+                }
+                else if (addingPoint)
+                {
+                    skillStatus_PlayerOne.Add(skillName, 1);
+                }
+            }
+            else if (playerNumber == 2)
+            {
+                if (skillStatus_PlayerTwo.ContainsKey(skillName))
+                {
+                    skillStatus_PlayerTwo[skillName] += pointChange;
+                    if (skillStatus_PlayerTwo[skillName] <= 0) skillStatus_PlayerTwo.Remove(skillName);
+                }
+                else if (addingPoint)
+                {
+                    skillStatus_PlayerTwo.Add(skillName, 1);
+                }
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void RemoveSkill(int playerNumber, string skillName)
+        {
+            if (playerNumber == 1 && skillStatus_PlayerOne.ContainsKey(skillName))
+            {
+                OnSkillRemoved?.Invoke(1, skillName, skillStatus_PlayerOne[skillName]);
+                skillStatus_PlayerOne.Remove(skillName);
+            }
+            else if (playerNumber == 2 && skillStatus_PlayerTwo.ContainsKey(skillName))
+            {
+                OnSkillRemoved?.Invoke(2, skillName, skillStatus_PlayerTwo[skillName]);
+                skillStatus_PlayerTwo.Remove(skillName);
             }
         }
 

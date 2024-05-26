@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Magus.PlayerController
 {
-    [System.Serializable]
+    [Serializable]
     public class ActiveSkill
     {
         public ActiveSkillData skillData;
@@ -37,6 +37,9 @@ namespace Magus.PlayerController
 
         public event Action<int, string> OnSkillUpdate;
 
+        private float castTimer;
+        private const float CAST_TIMER_EXPIRED = -500;
+
         public override void OnStartClient()
         {
             base.OnStartClient();
@@ -49,6 +52,7 @@ namespace Magus.PlayerController
 
         private void OnDestroy()
         {
+            if (!base.IsOwner) return;
             GlobalPlayerController.instance.OnSkillUpdate -= SkillUpdated;
             GlobalPlayerController.instance.OnSkillAdded -= OnSkillAdded;
             GlobalPlayerController.instance.OnSkillRemoved -= OnSkillRemoved;
@@ -96,6 +100,16 @@ namespace Magus.PlayerController
             {
                 
             }
+
+            if(castTimer > 0)
+            {
+                castTimer -= Time.deltaTime;
+            }
+            else if(castTimer > CAST_TIMER_EXPIRED)
+            {
+                playerInfo.stateManager.ExitState(PlayerState.Casting);
+                castTimer = CAST_TIMER_EXPIRED;
+            }
         }
 
         public void ActivateSkill(int skillNumber)
@@ -106,13 +120,25 @@ namespace Magus.PlayerController
 
             if (activeSkill == null) return;
             
-            if (activeSkill.cooldown > 0) return;
+            if (activeSkill.cooldown > 0 || !playerInfo.stateManager.ChangeState(PlayerState.Casting, skillData.priority, true)) return;
+
+            StopAllCoroutines();
+
             int skillLevel = GlobalPlayerController.instance.GetSkillStatus(ConnectionManager.instance.playerData[base.LocalConnection])[skillData.Name];
             activeSkill.cooldown = skillData.Cooldown[skillLevel - 1];
-            switch (skillData.skillType)
+
+            castTimer = skillData.spellTime[skillLevel - 1];
+            StartCoroutine(CastActiveSkill(skillData, skillLevel-1));
+        }
+
+        private IEnumerator CastActiveSkill(ActiveSkillData sd, int level)
+        {
+            yield return new WaitForSeconds(sd.castTime[level]);
+
+            switch (sd.skillType)
             {
                 case ActiveSkillType.Projectile:
-                    playerAttack.CastProjectileSkill(skillData as ProjectileSkillData);
+                    playerAttack.CastProjectileSkill(sd as ProjectileSkillData);
                     break;
                 case ActiveSkillType.Movement:
 
@@ -172,6 +198,7 @@ namespace Magus.PlayerController
                     if (GlobalPlayerController.instance.hotbarSkills[i] == default)
                     {
                         GlobalPlayerController.instance.hotbarSkills[i] = sd.Name;
+                        GlobalPlayerController.instance.UpdateHotbar(i);
                         break;
                     }
                 }
@@ -195,6 +222,7 @@ namespace Magus.PlayerController
                     if (GlobalPlayerController.instance.hotbarSkills[i] == sd.Name)
                     {
                         GlobalPlayerController.instance.hotbarSkills[i] = default;
+                        GlobalPlayerController.instance.UpdateHotbar(i);
                         break;
                     }
                 }

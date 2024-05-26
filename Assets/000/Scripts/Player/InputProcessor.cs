@@ -1,6 +1,5 @@
-using Cinemachine;
 using FishNet.Object;
-using Magus.Skills;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,10 +12,18 @@ namespace Magus.PlayerController
     {
         private PlayerInput playerInput;
 
+        private string currentControlScheme;
+
+        public event Action OnLoadedProcessor;
+
+        private void Awake()
+        {
+            playerInput = GetComponent<PlayerInput>();
+        }
+
         public override void OnStartClient()
         {
             base.OnStartClient();
-            playerInput = GetComponent<PlayerInput>();
             if (!base.IsOwner)
             {
                 playerInput.DeactivateInput();
@@ -25,12 +32,37 @@ namespace Magus.PlayerController
             else
             {
                 playerInput.enabled = true;
+                currentControlScheme = playerInput.currentControlScheme;
+                OnLoadedProcessor?.Invoke();
             }
         }
         public void OnMove(InputAction.CallbackContext value)
         {
             Vector2 input = value.ReadValue<Vector2>();
             playerInfo.movement.OnMove(input);
+        }
+
+        public Vector2 GetMoveInput()
+        {
+            var action = playerInput.currentActionMap.FindAction("Move");
+            if (action == null) return Vector2.zero;
+            return action.ReadValue<Vector2>();
+        }
+
+        public string GetActionName(string actionName)
+        {
+            if (playerInput == null || playerInput.currentActionMap == null) return default;
+            var action = playerInput.currentActionMap.FindAction(actionName);
+            if (action == null) return default;
+            return action.GetBindingDisplayString(InputBinding.MaskByGroup(currentControlScheme));
+        }
+
+        public void OnControlsChanged()
+        {
+            if (playerInput.currentControlScheme != currentControlScheme)
+            {
+                currentControlScheme = playerInput.currentControlScheme;
+            }
         }
 
         public void OnOpenSkill(InputAction.CallbackContext value)
@@ -64,5 +96,53 @@ namespace Magus.PlayerController
                 playerInfo.skillManager.ActivateSkill(2);
             }
         }
+
+        public void OnSkill_3(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.skillManager.ActivateSkill(3);
+            }
+        }
+
+        public void OnSkill_4(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.skillManager.ActivateSkill(4);
+            }
+        }
+        public void OnSkill_5(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.skillManager.ActivateSkill(5);
+            }
+        }
+
+        public void OnSkill_6(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.skillManager.ActivateSkill(6);
+            }
+        }
+
+        public void OnSkill_7(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.skillManager.ActivateSkill(7);
+            }
+        }
+
+        public void OnSkill_8(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.skillManager.ActivateSkill(8);
+            }
+        }
+
     }
 }

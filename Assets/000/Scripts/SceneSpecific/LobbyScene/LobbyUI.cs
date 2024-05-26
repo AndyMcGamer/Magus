@@ -40,7 +40,7 @@ namespace Magus.SceneSpecific
         [Header("Shared")]
         [SerializeField] private TextMeshProUGUI lobbyNameText;
         [SerializeField] private TextMeshProUGUI joinCodeText;
-        [SerializeField] private Text readyButtonText;
+        [SerializeField] private TextMeshProUGUI readyButtonText;
 
         private void OnEnable()
         {
@@ -70,14 +70,14 @@ namespace Magus.SceneSpecific
             if (LobbyManager.instance.IsHost)
             {
                 startButton.interactable = true;
-                startButton.GetComponentInChildren<Text>().text = "Start Game";
+                startButton.GetComponentInChildren<TextMeshProUGUI>().text = "START GAME";
                 playerToggle.SetActive(true);
                 duelIcon.SetActive(false);
             }
             else
             {
                 startButton.interactable = false;
-                startButton.GetComponentInChildren<Text>().text = "Waiting for Host";
+                startButton.GetComponentInChildren<TextMeshProUGUI>().text = "Waiting for Host";
                 playerToggle.SetActive(false);
                 duelIcon.SetActive(true);
             }

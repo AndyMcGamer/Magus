@@ -18,6 +18,29 @@ MonoBehaviour:
   <Description>k__BackingField: 
   <MaxLevel>k__BackingField: 10
   skillType: 0
+  priority: 25
+  spellTime:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  castTime:
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
   projectilePrefab: {fileID: 882575362378936157, guid: da33a8b1573fda9449ab6b004c646586,
     type: 3}
   <Cost>k__BackingField:

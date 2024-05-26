@@ -10,14 +10,14 @@ namespace Magus.PlayerController
     {
         [Header("References")]
         [SerializeField] private CharacterController characterController;
-        [SerializeField] private Transform playerModel;
 
         [Header("Settings")]
-        [SerializeField] private float rotationSpeed;
         [SerializeField] private float gravity;
 
         private Vector3 moveInput;
         private Vector3 Gravity => gravity * Vector3.down;
+
+        private bool canMove;
 
         public override void OnStartClient()
         {
@@ -31,29 +31,51 @@ namespace Magus.PlayerController
             else
             {
                 enabled = true;
+                playerInfo.stateManager.OnEnterState += OnStateEnter;
+                playerInfo.stateManager.OnExitState += OnStateExit;
             }
+        }
+
+        private void OnDestroy()
+        {
+            if (!base.IsOwner) return;
+            playerInfo.stateManager.OnEnterState -= OnStateEnter;
+            playerInfo.stateManager.OnExitState -= OnStateExit;
+        }
+
+        private void OnStateEnter(PlayerState state)
+        {
+            canMove = state == PlayerState.Moving;
+            if (!canMove) OnMove(playerInfo.inputProcessor.GetMoveInput());
+        }
+
+        private void OnStateExit(PlayerState state)
+        {
+            canMove = state == PlayerState.Moving;
         }
 
         public void OnMove(Vector2 input)
         {
             moveInput = new(input.x, 0, input.y);
             moveInput.ConvertToIsometric(playerInfo.playerCamera.transform.eulerAngles.ScaleBy(Vector3.up));
+
+            if(moveInput.sqrMagnitude > 0)
+            {
+                playerInfo.stateManager.ChangeState(PlayerState.Moving);
+                playerInfo.lastMove = moveInput;
+            }
+            else if (canMove)
+            {
+                playerInfo.stateManager.ExitState();
+            }
         }
 
         private void Update()
         {
+            if (!canMove) return;
+
             Vector3 movement = (moveInput * playerInfo.moveSpeed + Gravity) * Time.deltaTime;
             characterController.Move(movement);
-            if (moveInput.sqrMagnitude != 0)
-            {
-                playerInfo.lastMove = moveInput;
-            }
-
-            if(playerInfo.lastMove.sqrMagnitude != 0)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(playerInfo.lastMove, Vector3.up);
-                playerModel.rotation = Quaternion.RotateTowards(playerModel.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-            }
             
         }
     }
