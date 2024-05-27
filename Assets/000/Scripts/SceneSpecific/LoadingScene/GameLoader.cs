@@ -31,11 +31,7 @@ namespace Magus.SceneSpecific
         {
             countdownTimer.OnChange += CountdownChanged;
             OnCountdownChanged?.Invoke(Constants.LOADING_INITIAL_TIME);
-            if (base.IsServerInitialized)
-            {
-                base.SceneManager.OnClientLoadedStartScenes += ClientLoadedStartScene;
-                base.SceneManager.OnLoadEnd += OnLoadEnd;
-            }
+
         }
 
         private void OnDestroy()
@@ -105,7 +101,7 @@ namespace Magus.SceneSpecific
                     GlobalPlayerController.instance.AddTrainingRoom(ConnectionManager.instance.playerData[conn], openScenes[j]);
                     ++j;
                 }
-                MatchController.instance.StartMatch(gameMode);
+                MatchController.instance.StartMatch(gameMode, minPlayers);
             }
         }
 
@@ -123,8 +119,6 @@ namespace Magus.SceneSpecific
                     SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, ReplaceOption.None);
                     SceneSwitcher.instance.PreloadNetworkScenes("TrainingRoom");
                     activatedSceneChange = true;
-                    //SceneSwitcher.instance.UnloadGlobalNetworkedScene("LoadingScene");
-                    //SceneSwitcher.instance.LoadStackedNetworkScene("TrainingRoom", ServerManager.Clients.Values.ToArray());
                 }
             }
         }

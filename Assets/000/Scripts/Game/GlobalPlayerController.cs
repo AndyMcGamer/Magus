@@ -106,6 +106,7 @@ namespace Magus.Game
             {
                 case SyncDictionaryOperation.Add:
                     OnSkillAdded?.Invoke(1, key);
+                    print("ADD");
                     break;
                 case SyncDictionaryOperation.Clear:
                     break;

@@ -33,7 +33,7 @@ namespace Magus.PlayerController
 
         public bool ChangeState(PlayerState newState, bool forceRefresh = false)
         {
-            if ((int)newState < priority || ((newState == state) && !forceRefresh)) return false;
+            if ((int)newState <= priority || ((newState == state) && !forceRefresh)) return false;
 
             OnExitState?.Invoke(state);
             state = newState;
@@ -44,7 +44,7 @@ namespace Magus.PlayerController
 
         public bool ChangeState(PlayerState newState, int newPriority, bool forceRefresh = false)
         {
-            if(newPriority <  priority || ((newState == state) && !forceRefresh)) return false;
+            if(newPriority <= priority || ((newState == state) && !forceRefresh)) return false;
 
             OnExitState?.Invoke(state);
             state = newState;

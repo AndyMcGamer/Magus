@@ -99,7 +99,7 @@ namespace Magus.Skills.SkillTree
         private void OnValidate()
         {
             skills = _skills.ToHashSet();
-            RebuildPostRequisites();
+            //RebuildPostRequisites();
         }
 #endif
     }

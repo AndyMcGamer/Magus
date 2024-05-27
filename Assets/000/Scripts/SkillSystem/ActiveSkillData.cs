@@ -9,13 +9,13 @@ namespace Magus.Skills
     public enum ActiveSkillType
     {
         Projectile,
-        Movement,
+        Dash,
         Toggle,
         Summon
     }
     public abstract class ActiveSkillData : SkillData
     {
-        public ActiveSkillType skillType;
+        public abstract ActiveSkillType SkillType { get; }
         public int priority;
         public float[] spellTime;
         public float[] castTime;

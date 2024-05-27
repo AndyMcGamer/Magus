@@ -11,6 +11,7 @@ namespace Magus.Skills.ActiveSkills
 {
     public class Projectile : MonoBehaviour
     {
+        [SerializeField] private Rigidbody rb;
         [SerializeField] private GameObject visual;
         [SerializeField] private Collider col;
 
@@ -44,7 +45,7 @@ namespace Magus.Skills.ActiveSkills
             this.damage = skillData.damage[skillLevel];
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             Move();
         }
@@ -52,7 +53,7 @@ namespace Magus.Skills.ActiveSkills
         private void Move()
         {
             if (gameObject == null) return;
-            float delta = Time.deltaTime;
+            float delta = Time.fixedDeltaTime;
 
             float passedTimeDelta = 0f;
             if(passedTime > 0f)
@@ -68,7 +69,7 @@ namespace Magus.Skills.ActiveSkills
                 passedTimeDelta = step;
             }
 
-            transform.position += transform.forward * (moveRate * (delta + passedTimeDelta));
+            rb.MovePosition(rb.position + transform.forward * (moveRate * (delta + passedTimeDelta)));
             lifetime -= delta;
             if (lifetime < 0f)
             {

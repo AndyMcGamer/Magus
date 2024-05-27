@@ -28,12 +28,15 @@ namespace Magus.SceneSpecific
             if(base.TransportManager.GetTransport<Multipass>().ClientTransport is Yak)
             {
                 AddToConnectionManager(1, base.LocalConnection);
+                ConnectionManager.instance.GatherTrainingPlayer();
             }
             else
             {
                 int playerNumber = Int32.Parse(LobbyManager.instance.LocalPlayer.Data["PlayerNumber"].Value);
                 AddToConnectionManager(playerNumber, base.LocalConnection);
+                ConnectionManager.instance.GatherPlayerNames();
             }
+            
 
         }
 

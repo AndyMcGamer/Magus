@@ -7,9 +7,7 @@ using UnityEngine;
 namespace Magus.PlayerController
 {
     public class PlayerMovement : PlayerControllerComponent
-    {
-        [Header("References")]
-        [SerializeField] private CharacterController characterController;
+    {        
 
         [Header("Settings")]
         [SerializeField] private float gravity;
@@ -25,7 +23,7 @@ namespace Magus.PlayerController
             playerInfo.lastMove = new Vector3(-1,0,1).normalized;
             if (!base.IsOwner)
             {
-                characterController.enabled = false;
+                playerInfo.characterController.enabled = false;
                 enabled = false;
             }
             else
@@ -38,7 +36,6 @@ namespace Magus.PlayerController
 
         private void OnDestroy()
         {
-            if (!base.IsOwner) return;
             playerInfo.stateManager.OnEnterState -= OnStateEnter;
             playerInfo.stateManager.OnExitState -= OnStateExit;
         }
@@ -62,7 +59,7 @@ namespace Magus.PlayerController
             if(moveInput.sqrMagnitude > 0)
             {
                 playerInfo.stateManager.ChangeState(PlayerState.Moving);
-                playerInfo.lastMove = moveInput;
+                if(canMove) playerInfo.lastMove = moveInput;
             }
             else if (canMove)
             {
@@ -75,7 +72,7 @@ namespace Magus.PlayerController
             if (!canMove) return;
 
             Vector3 movement = (moveInput * playerInfo.moveSpeed + Gravity) * Time.deltaTime;
-            characterController.Move(movement);
+            playerInfo.characterController.Move(movement);
             
         }
     }

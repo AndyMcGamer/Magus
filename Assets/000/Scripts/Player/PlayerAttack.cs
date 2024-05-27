@@ -36,7 +36,6 @@ namespace Magus.PlayerController
             var spawnedProjectile = Instantiate(skillData.projectilePrefab, position, Quaternion.LookRotation(direction)).GetComponent<Projectile>();
             spawnedProjectile.Initialize(skillData, timePassed, playerNumber, showVisual: scene == UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(spawnedProjectile.gameObject, scene);
-            
         }
 
         [ServerRpc]

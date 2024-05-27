@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 namespace Magus.Global
 {
     public static class Constants
@@ -37,8 +39,8 @@ namespace Magus.Global
         /// </summary>
         public const int MAX_ROUNDS = 5;
 
-        public const float TRAINING_TIME = 20; // should be 90
-        public const float BATTLE_TIME = 300;
+        public const float TRAINING_TIME = 90; // should be 90
+        public const float BATTLE_TIME = 300; // should be 300
         public const float MAX_TIME = 5999;
 
         public const float LOADING_INITIAL_TIME = 30;
@@ -49,12 +51,17 @@ namespace Magus.Global
         public const string PLAYER_ONE_TAG = "PlayerOne";
         public const string PLAYER_TWO_TAG = "PlayerTwo";
 
-        public static readonly UnityEngine.Vector3 PLAYER_ONE_SPAWN = new(-8, 1, -8);
-        public static readonly UnityEngine.Vector3 PLAYER_TWO_SPAWN = new(8, 1, 8);
+        public static readonly Vector3 PLAYER_ONE_SPAWN = new(-8, 1, -8);
+        public static readonly Vector3 PLAYER_TWO_SPAWN = new(8, 1, 8);
 
         public const int MAX_HOTBAR_SKILLS = 8;
 
+        public static readonly LayerMask PLAYER_ONE_LAYER = LayerMask.NameToLayer(PLAYER_ONE_TAG);
+        public static readonly LayerMask PLAYER_TWO_LAYER = LayerMask.NameToLayer(PLAYER_TWO_TAG);
+
         public const string CLASSIC_ACTION_MAP = "Classic";
         public const string MODERN_ACTION_MAP = "Modern";
+
+        public const float ENDING_INITIAL_TIME = 20;
     }
 }

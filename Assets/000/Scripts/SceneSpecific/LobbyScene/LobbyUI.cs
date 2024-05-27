@@ -175,6 +175,7 @@ namespace Magus.SceneSpecific
         private void GameStarted(object sender, EventArgs e)
         {
             LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_1V1, (int)GameMode.Standard } };
+            LobbyManager.instance.UpdateReadyCheck(false);
             SceneSwitcher.instance.LoadGlobalNetworkedScene("LoadingScene", loadParams);
         }
 

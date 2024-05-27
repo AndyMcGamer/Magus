@@ -38,7 +38,6 @@ namespace Magus.PlayerController
 
         private void OnDestroy()
         {
-            if (!base.IsOwner) return;
             GlobalPlayerController.instance.OnSkillPointsChanged -= OnSkillPointsChanged;
         }
 

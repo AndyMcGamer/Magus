@@ -5,6 +5,7 @@ using Magus.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Magus.Game
@@ -43,6 +44,8 @@ namespace Magus.Game
             stageTimer.OnChange -= StageTimer_OnChange;
         }
 
+        
+
         private void StageTimer_OnChange(float prev, float next, bool asServer)
         {
             if(!asServer)
@@ -59,8 +62,7 @@ namespace Magus.Game
                             SwitchToBattle();
                             break;
                         case GameStage.Battle:
-                            changeStageTimer = true;
-                            SetStageTimer(Constants.TRAINING_TIME);
+                            SwitchToTraining();
                             break;
                         case GameStage.SuddenDeath:
                             changeStageTimer = false;
@@ -84,6 +86,31 @@ namespace Magus.Game
             SceneSwitcher.instance.LoadGlobalNetworkedScene("BattleScene", true, FishNet.Managing.Scened.ReplaceOption.None);
         }
 
+        private void SwitchToTraining()
+        {
+            changeStageTimer = false;
+            float p1Health = GlobalPlayerController.instance.GetCurrentHealth(1);
+            float p2Health = GlobalPlayerController.instance.GetCurrentHealth(2);
+            if(p1Health > p2Health)
+            {
+                MatchController.instance.EndRound(1);
+            }
+            else if(p1Health < p2Health)
+            {
+                MatchController.instance.EndRound(2);
+            }
+            else
+            {
+                MatchController.instance.EndRound(0);
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void EndRound()
+        {
+            SwitchToTraining();
+        }
+
 
         [Server]
         private void SetStageTimer(float time)
@@ -95,7 +122,9 @@ namespace Magus.Game
         {
             gameStage = GameStage.Training;
             SetGameStage(gameStage);
-            switch(MatchController.instance.gameMode)
+            GlobalPlayerController.instance.SetPlayerHealth(1, 100);
+            GlobalPlayerController.instance.SetPlayerHealth(2, 100);
+            switch (MatchController.instance.gameMode)
             {
                 case GameMode.Training:
                     changeStageTimer = false;

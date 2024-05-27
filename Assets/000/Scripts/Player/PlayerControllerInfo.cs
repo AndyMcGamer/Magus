@@ -16,13 +16,19 @@ namespace Magus.PlayerController
         [Header("References")]
         public InputProcessor inputProcessor;
         public PlayerStateManager stateManager;
+        public PlayerAnimation playerAnim;
         public PlayerRotation playerRotation;
         public PlayerMovement movement;
         public PlayerHUD playerHUD;
+        public PlayerHotbar playerHotbar;
         public PlayerSkillManager skillManager;
         public PlayerAttack playerAttack;
+        public PlayerDash playerDash;
         public CinemachineVirtualCamera playerCamera;
+        public CharacterController characterController;
         public Collider playerCollider;
+        public Transform playerModel;
+        public Animator playerAnimator;
 
         [Header("Settings")]
         public string playerTag;
@@ -33,11 +39,14 @@ namespace Magus.PlayerController
         {
             inputProcessor.Init(this);
             stateManager.Init(this);
+            playerAnim.Init(this);
             playerRotation.Init(this);
             movement.Init(this);
             playerHUD.Init(this);
+            playerHotbar.Init(this);
             skillManager.Init(this);
             playerAttack.Init(this);
+            playerDash.Init(this);
 
             GlobalPlayerController.instance.OnPlayerDeath += PlayerDeath;
         }
@@ -50,9 +59,11 @@ namespace Magus.PlayerController
         public override void OnStartClient()
         {
             base.OnStartClient();
-            playerTag = HelperFunctions.GetPlayerTag(ConnectionManager.instance.playerData[base.Owner]);
+            int playerNumber = ConnectionManager.instance.playerData[base.Owner];
+            playerTag = HelperFunctions.GetPlayerTag(playerNumber);
             gameObject.tag = playerTag;
             playerCollider.tag = playerTag;
+            gameObject.layer = HelperFunctions.GetPlayerLayer(playerNumber);
             if (!base.IsOwner)
             {
                 enabled = false;

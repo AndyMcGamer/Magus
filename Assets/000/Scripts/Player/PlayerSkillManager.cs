@@ -26,8 +26,6 @@ namespace Magus.PlayerController
 
     public class PlayerSkillManager : PlayerControllerComponent
     {
-        [Header("References")]
-        [SerializeField] private PlayerAttack playerAttack;
 
         [Header("Skill Lists")]
         [SerializeField, ReorderableList, ReadOnly] private List<ActiveSkill> activeSkills;
@@ -44,6 +42,7 @@ namespace Magus.PlayerController
         {
             base.OnStartClient();
             if (!base.IsOwner) return;
+            print("Is Owner");
             RebuildSkillLists();
             GlobalPlayerController.instance.OnSkillUpdate += SkillUpdated;
             GlobalPlayerController.instance.OnSkillAdded += OnSkillAdded;
@@ -52,7 +51,6 @@ namespace Magus.PlayerController
 
         private void OnDestroy()
         {
-            if (!base.IsOwner) return;
             GlobalPlayerController.instance.OnSkillUpdate -= SkillUpdated;
             GlobalPlayerController.instance.OnSkillAdded -= OnSkillAdded;
             GlobalPlayerController.instance.OnSkillRemoved -= OnSkillRemoved;
@@ -66,6 +64,7 @@ namespace Magus.PlayerController
         private void OnSkillAdded(int playerNumber, string skillName)
         {
             if (playerNumber != ConnectionManager.instance.playerData[base.LocalConnection]) return;
+
             SkillData sd = GlobalPlayerController.instance.skillDatabase.FindDataByName<SkillData>(skillName);
             skillList.Add(sd);
             AddSkillToList(sd);
@@ -135,13 +134,13 @@ namespace Magus.PlayerController
         {
             yield return new WaitForSeconds(sd.castTime[level]);
 
-            switch (sd.skillType)
+            switch (sd.SkillType)
             {
                 case ActiveSkillType.Projectile:
-                    playerAttack.CastProjectileSkill(sd as ProjectileSkillData);
+                    playerInfo.playerAttack.CastProjectileSkill(sd as ProjectileSkillData);
                     break;
-                case ActiveSkillType.Movement:
-
+                case ActiveSkillType.Dash:
+                    playerInfo.playerDash.CastDashSkill(sd as DashSkillData, level);
                     break;
                 case ActiveSkillType.Toggle:
                     break;
