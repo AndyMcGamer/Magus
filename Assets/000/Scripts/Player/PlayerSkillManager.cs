@@ -7,6 +7,7 @@ using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Magus.PlayerController
@@ -56,6 +57,36 @@ namespace Magus.PlayerController
             GlobalPlayerController.instance.OnSkillRemoved -= OnSkillRemoved;
         }
 
+        private void Update()
+        {
+            foreach (ActiveSkill skill in activeSkills)
+            {
+                if (skill.cooldown > 0)
+                {
+                    skill.cooldown -= Time.deltaTime;
+                }
+                else
+                {
+                    skill.cooldown = 0;
+                }
+            }
+
+            foreach (PassiveSkillData passiveSkill in passiveSkills)
+            {
+
+            }
+
+            if (castTimer > 0)
+            {
+                castTimer -= Time.deltaTime;
+            }
+            else if (castTimer > CAST_TIMER_EXPIRED)
+            {
+                playerInfo.stateManager.ExitState(PlayerState.Casting);
+                castTimer = CAST_TIMER_EXPIRED;
+            }
+        }
+
         private void SkillUpdated(int playerNumber, string skillName)
         {
             if (playerNumber != ConnectionManager.instance.playerData[base.LocalConnection]) return;
@@ -83,32 +114,6 @@ namespace Magus.PlayerController
             // Refund points
             GlobalPlayerController.instance.ChangeSkillPoints(playerNumber, skillLevel);
             OnSkillUpdate?.Invoke(playerNumber, skillName);
-        }
-
-        private void Update()
-        {
-            foreach (ActiveSkill skill in activeSkills)
-            {
-                if(skill.cooldown > 0)
-                {
-                    skill.cooldown -= Time.deltaTime;
-                }
-            }
-
-            foreach (PassiveSkillData passiveSkill in passiveSkills)
-            {
-                
-            }
-
-            if(castTimer > 0)
-            {
-                castTimer -= Time.deltaTime;
-            }
-            else if(castTimer > CAST_TIMER_EXPIRED)
-            {
-                playerInfo.stateManager.ExitState(PlayerState.Casting);
-                castTimer = CAST_TIMER_EXPIRED;
-            }
         }
 
         public void ActivateSkill(int skillNumber)
@@ -149,6 +154,11 @@ namespace Magus.PlayerController
                 default:
                     break;
             }
+        }
+
+        public ActiveSkill GetActiveSkill(string skillName)
+        {
+            return activeSkills.FirstOrDefault(x => x.skillData.Name == skillName);
         }
 
         public void UpdateSkill(string skillName, bool addingPoint)

@@ -5059,6 +5059,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2338397385046653109}
   - component: {fileID: 1508491437579564983}
+  - component: {fileID: 4245210606470757452}
   m_Layer: 0
   m_Name: PlayerCameraController
   m_TagString: Untagged
@@ -5100,7 +5101,7 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 0
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 0}
+  m_LookAt: {fileID: 4202711492782105752}
   m_Follow: {fileID: 2820871245219742560}
   m_Lens:
     FieldOfView: 60
@@ -5121,6 +5122,23 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1146076872850532563}
+--- !u!114 &4245210606470757452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6742408405272571022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2fba25a5cd15594e8f050a11e386c80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ConfineMode: 1
+  m_BoundingVolume: {fileID: 0}
+  m_BoundingShape2D: {fileID: 0}
+  m_ConfineScreenEdges: 1
+  m_Damping: 0
 --- !u!1 &6860454782197895523
 GameObject:
   m_ObjectHideFlags: 0
@@ -7017,6 +7035,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
       propertyPath: inputProcessor
       value: 
       objectReference: {fileID: 971858288733494005}
@@ -7194,6 +7217,11 @@ PrefabInstance:
       propertyPath: skillNumber
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
       propertyPath: inputProcessor
@@ -7375,6 +7403,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
       propertyPath: inputProcessor
       value: 
       objectReference: {fileID: 971858288733494005}
@@ -7554,6 +7587,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
       propertyPath: inputProcessor
       value: 
       objectReference: {fileID: 971858288733494005}
@@ -7731,6 +7769,11 @@ PrefabInstance:
       propertyPath: skillNumber
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
       propertyPath: inputProcessor
@@ -8048,6 +8091,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
       propertyPath: inputProcessor
       value: 
       objectReference: {fileID: 971858288733494005}
@@ -8225,6 +8273,11 @@ PrefabInstance:
       propertyPath: skillNumber
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
       propertyPath: inputProcessor
@@ -8670,6 +8723,11 @@ PrefabInstance:
       propertyPath: skillNumber
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
+        type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 5279942750532393296}
     - target: {fileID: 7052994980843285317, guid: 88577c96c88c65f459f3d47aab879b27,
         type: 3}
       propertyPath: inputProcessor
