@@ -42,7 +42,7 @@ namespace Magus.Skills
         {
             inputProcessor.OnLoadedProcessor += InputProcessor_OnLoadedProcessor;
             GlobalPlayerController.instance.OnHotbarUpdated += OnHotbarUpdated;
-            OnHotbarUpdated(Index);
+            skillManager.OnRebuildSkills += SkillManager_OnRebuildSkills;
             keyPrompt.text = inputProcessor.GetActionName(ActionName);
         }
 
@@ -50,11 +50,18 @@ namespace Magus.Skills
         {
             GlobalPlayerController.instance.OnHotbarUpdated -= OnHotbarUpdated;
             inputProcessor.OnLoadedProcessor -= InputProcessor_OnLoadedProcessor;
+            skillManager.OnRebuildSkills -= SkillManager_OnRebuildSkills;
         }
 
         private void InputProcessor_OnLoadedProcessor()
         {
             keyPrompt.text = inputProcessor.GetActionName(ActionName);
+            OnHotbarUpdated(Index);
+        }
+
+        private void SkillManager_OnRebuildSkills()
+        {
+            OnHotbarUpdated(Index);
         }
 
         private void OnHotbarUpdated(int hotbarIndex)
@@ -70,6 +77,7 @@ namespace Magus.Skills
                 return;
             }
             currentActiveSkill = skillManager.GetActiveSkill(skillName);
+            if (currentActiveSkill == null) return;
             var skillData = currentActiveSkill.skillData;
             iconMask.gameObject.SetActive(true);
             skillIcon.sprite = skillData.Icon;
@@ -92,6 +100,7 @@ namespace Magus.Skills
                     if (!disabledImage.activeSelf)
                     {
                         disabledImage.SetActive(true);
+                        cooldownImage.raycastTarget = true;
                     }
                     cooldownImage.fillAmount = currentActiveSkill.cooldown / currentActiveSkill.skillData.Cooldown[SkillLevel - 1];
                     cooldownText.text = ProcessCooldownText(currentActiveSkill.cooldown);
@@ -100,6 +109,7 @@ namespace Magus.Skills
                 {
                     if (disabledImage.activeSelf) disabledImage.SetActive(false);
                     cooldownImage.fillAmount = 0;
+                    cooldownImage.raycastTarget = false;
                     cooldownText.text = "";
                 }
             }

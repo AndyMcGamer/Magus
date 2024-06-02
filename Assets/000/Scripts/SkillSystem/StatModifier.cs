@@ -1,20 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Magus.Global;
 
 namespace Magus.Skills
 {
-    public enum ModifierType
-    {
-        Constant,
-        Percentage
-    }
 
     [System.Serializable]
     public class StatModifier
     {
         public StatType stat;
-        public ModifierType type;
+        public StatValueType type;
         public float value;
     }
 

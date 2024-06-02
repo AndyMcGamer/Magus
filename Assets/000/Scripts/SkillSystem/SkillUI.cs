@@ -42,15 +42,29 @@ namespace Magus.Skills
         {
             playerInfo.skillManager.OnSkillUpdate += SkillManager_OnSkillUpdate;
             playerInfo.skillManager.PropogateSkillUpdate(skillNode.skillData.Name);
+            GlobalPlayerController.instance.OnSkillPointsChanged += OnSkillPointsChanged;
         }
 
         private void OnDisable()
         {
             playerInfo.skillManager.OnSkillUpdate -= SkillManager_OnSkillUpdate;
+            GlobalPlayerController.instance.OnSkillPointsChanged -= OnSkillPointsChanged;
+        }
+
+        private void OnSkillPointsChanged(int playerNumber, int prev, int next)
+        {
+            if (playerNumber != ConnectionManager.instance.playerData[playerInfo.LocalConnection]) return;
+            if (prev != 0 && next != 0) return;
+            UpdateSkillUI(playerNumber, skillNode.skillData.Name, false);
         }
 
         private void SkillManager_OnSkillUpdate(int playerNumber, string skillName)
         {   
+            UpdateSkillUI(playerNumber, skillName);
+        }
+
+        private void UpdateSkillUI(int playerNumber, string skillName, bool prop = true)
+        {
             if (skillName != skillNode.skillData.Name) return;
 
             var ownedSkills = GlobalPlayerController.instance.GetSkillStatus(playerNumber);
@@ -63,7 +77,7 @@ namespace Magus.Skills
             bool previous = unlocked;
             unlocked = CheckPrerequisites(playerNumber);
 
-            if(unlocked != previous && !unlocked)
+            if (unlocked != previous && !unlocked)
             {
                 GlobalPlayerController.instance.RemoveSkill(playerNumber, skillName);
             }
@@ -71,6 +85,8 @@ namespace Magus.Skills
             ToggleLevelText(unlocked);
             ToggleUpgradeButtons(playerNumber, unlocked, skillLevel);
             ToggleDisableMask(unlocked);
+
+            if (!prop) return;
 
             // Go down connected nodes
             foreach (var postReq in skillNode.postrequisites)

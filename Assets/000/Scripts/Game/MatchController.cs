@@ -105,8 +105,8 @@ namespace Magus.Game
                     GlobalPlayerController.instance.SetSkillPoints(1, 999);
                     break;
                 case GameMode.Standard:
-                    GlobalPlayerController.instance.SetSkillPoints(1, 10);
-                    GlobalPlayerController.instance.SetSkillPoints(2, 10);
+                    GlobalPlayerController.instance.SetSkillPoints(1, 5);
+                    GlobalPlayerController.instance.SetSkillPoints(2, 5);
                     break;
             }
         }
@@ -128,6 +128,8 @@ namespace Magus.Game
             {
                 roundNumber++;
                 SetRoundNumber(roundNumber);
+                GlobalPlayerController.instance.ChangeSkillPoints(1, 3);
+                GlobalPlayerController.instance.ChangeSkillPoints(2, 3);
             }
 
             GlobalPlayerController.instance.ClearTrainingRooms();

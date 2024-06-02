@@ -35,6 +35,7 @@ namespace Magus.PlayerController
         private HashSet<SkillData> skillList;
 
         public event Action<int, string> OnSkillUpdate;
+        public event Action OnRebuildSkills;
 
         private float castTimer;
         private const float CAST_TIMER_EXPIRED = -500;
@@ -158,6 +159,7 @@ namespace Magus.PlayerController
 
         public ActiveSkill GetActiveSkill(string skillName)
         {
+            if (activeSkills == null) return null;
             return activeSkills.FirstOrDefault(x => x.skillData.Name == skillName);
         }
 
@@ -189,6 +191,7 @@ namespace Magus.PlayerController
                     activeSkills.Add(new ActiveSkill(sd as ActiveSkillData));
                 }
             }
+            OnRebuildSkills?.Invoke();
         }
 
         private void AddSkillToList(SkillData sd)

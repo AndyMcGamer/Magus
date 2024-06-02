@@ -30,8 +30,8 @@ namespace Magus.Game
         public event Action<int> OnPlayerDeath;
         public event Action<int, float> OnPlayerHealthChange;
 
-        private readonly SyncDictionary<string, int> skillStatus_PlayerOne = new();
-        private readonly SyncDictionary<string, int> skillStatus_PlayerTwo = new();
+        private readonly SyncDictionary<string, int> skillStatus_PlayerOne = new(new SyncTypeSettings(0f));
+        private readonly SyncDictionary<string, int> skillStatus_PlayerTwo = new(new SyncTypeSettings(0f));
 
         public Dictionary<string, int> GetSkillStatus(int playerNumber) => (playerNumber == 1) ? skillStatus_PlayerOne.Collection : skillStatus_PlayerTwo.Collection;
 
@@ -55,7 +55,7 @@ namespace Magus.Game
 
         public int GetSkillPoints(int playerNumber) => playerNumber == 1 ? skillPoints_PlayerOne.Value : skillPoints_PlayerTwo.Value;
 
-        public event Action<int> OnSkillPointsChanged;
+        public event Action<int, int, int> OnSkillPointsChanged;
 
         public Dictionary<int, Scene> trainingRooms;
 
@@ -106,7 +106,6 @@ namespace Magus.Game
             {
                 case SyncDictionaryOperation.Add:
                     OnSkillAdded?.Invoke(1, key);
-                    print("ADD");
                     break;
                 case SyncDictionaryOperation.Clear:
                     break;
@@ -145,12 +144,12 @@ namespace Magus.Game
         private void SkillPoints_PlayerOne_OnChange(int prev, int next, bool asServer)
         {
             if (asServer) return;
-            OnSkillPointsChanged?.Invoke(1);
+            OnSkillPointsChanged?.Invoke(1, prev, next);
         }
         private void SkillPoints_PlayerTwo_OnChange(int prev, int next, bool asServer)
         {
             if (asServer) return;
-            OnSkillPointsChanged?.Invoke(2);
+            OnSkillPointsChanged?.Invoke(2, prev, next);
         }
 
 

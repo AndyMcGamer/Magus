@@ -32,14 +32,14 @@ namespace Magus.Global
         /// <summary>
         /// Number of rounds needed to win the match
         /// </summary>
-        public const int NUM_WINS_NEEDED = 3;
+        public const int NUM_WINS_NEEDED = 1;
 
         /// <summary>
         /// Maximum number of rounds in a match
         /// </summary>
         public const int MAX_ROUNDS = 5;
 
-        public const float TRAINING_TIME = 90; // should be 90
+        public const float TRAINING_TIME = 30; // should be 90
         public const float BATTLE_TIME = 300; // should be 300
         public const float MAX_TIME = 5999;
 
@@ -62,6 +62,16 @@ namespace Magus.Global
         public const string CLASSIC_ACTION_MAP = "Classic";
         public const string MODERN_ACTION_MAP = "Modern";
 
-        public const float ENDING_INITIAL_TIME = 20;
+        public const float ENDING_COUNTDOWN = 60;
+
+        public static readonly int[] playerAnimations =
+        {
+            Animator.StringToHash("Movement"),
+            Animator.StringToHash("Attack01"),
+            Animator.StringToHash("Attack02"),
+            Animator.StringToHash("Attack03"),
+            Animator.StringToHash("Attack04"),
+        };
+
     }
 }

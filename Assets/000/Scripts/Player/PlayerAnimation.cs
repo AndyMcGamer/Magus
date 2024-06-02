@@ -1,5 +1,3 @@
-using DG.Tweening;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +6,12 @@ namespace Magus.PlayerController
 {
     public class PlayerAnimation : PlayerControllerComponent
     {
+        [SerializeField] private float movementBlendSpeed;
+        private float currentSpeed;
+        [HideInInspector] public float targetSpeed;
+
+        private PlayerState previousState;
+
         public override void OnStartClient()
         {
             base.OnStartClient();
@@ -25,16 +29,16 @@ namespace Magus.PlayerController
 
         private void OnStateEnter(PlayerState state)
         {
+            AnimatorStateInfo stateInfo = playerInfo.playerAnimator.Animator.GetCurrentAnimatorStateInfo(0);
+            float currentLength = stateInfo.length;
             switch (state)
             {
                 case PlayerState.Idle:
-                    playerInfo.playerAnimator.Play("Idle03");
-                    break;
                 case PlayerState.Moving:
-                    playerInfo.playerAnimator.Play("BattleRunForward");
+                    playerInfo.playerAnimator.CrossFadeInFixedTime("Movement", previousState == PlayerState.Idle ? 0.05f * currentLength : 0.15f * currentLength, 0);
                     break;
                 case PlayerState.Casting:
-                    playerInfo.playerAnimator.Play("Attack01");
+                    playerInfo.playerAnimator.CrossFadeInFixedTime("Attack01", 0.05f * currentLength, 0);
                     break;
                 case PlayerState.Frozen:
                     break;
@@ -47,7 +51,23 @@ namespace Magus.PlayerController
 
         private void OnStateExit(PlayerState state)
         {
-            
+            previousState = state;
+        }
+
+        private void Update()
+        {
+            if (currentSpeed == targetSpeed) return;
+            if(targetSpeed > currentSpeed)
+            {
+                currentSpeed += movementBlendSpeed;
+                currentSpeed = Mathf.Clamp(currentSpeed, currentSpeed, targetSpeed);
+            }
+            else
+            {
+                currentSpeed -= movementBlendSpeed;
+                currentSpeed = Mathf.Clamp(currentSpeed, targetSpeed, currentSpeed);
+            }
+            playerInfo.playerAnimator.Animator.SetFloat("Speed", currentSpeed);
         }
     }
 }

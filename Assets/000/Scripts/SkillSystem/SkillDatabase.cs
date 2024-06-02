@@ -17,6 +17,16 @@ namespace Magus.Skills.SkillTree
         public void Initialize()
         {
             skills = _skills.ToHashSet();
+            foreach (var skillNode in skills)
+            {
+                skillNode.postrequisites = new();
+                foreach (var prereq in skillNode.prerequisites)
+                {
+                    SkillNode sn = skills.First(x => x.skillData == prereq.skill);
+                    string skillName = skillNode.skillData.name;
+                    sn.postrequisites.Add(skillName);
+                }
+            }
         }
 
         public T FindDataByName<T>(string name) where T : SkillData

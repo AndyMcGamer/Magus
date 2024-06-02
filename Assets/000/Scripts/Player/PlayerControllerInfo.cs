@@ -1,4 +1,5 @@
 using Cinemachine;
+using FishNet.Component.Animating;
 using FishNet.Connection;
 using FishNet.Object;
 using Magus.Game;
@@ -28,7 +29,7 @@ namespace Magus.PlayerController
         public CharacterController characterController;
         public Collider playerCollider;
         public Transform playerModel;
-        public Animator playerAnimator;
+        public NetworkAnimator playerAnimator;
 
         [Header("Settings")]
         public string playerTag;
@@ -48,12 +49,18 @@ namespace Magus.PlayerController
             playerAttack.Init(this);
             playerDash.Init(this);
 
-            GlobalPlayerController.instance.OnPlayerDeath += PlayerDeath;
+            
         }
 
         private void OnDestroy()
         {
             GlobalPlayerController.instance.OnPlayerDeath -= PlayerDeath;
+        }
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            GlobalPlayerController.instance.OnPlayerDeath += PlayerDeath;
         }
 
         public override void OnStartClient()
@@ -70,6 +77,7 @@ namespace Magus.PlayerController
             }
             else
             {
+                playerCamera.enabled = true;
                 playerCamera.Priority = 10;
                 SetTag(gameObject.tag);
             }
@@ -86,6 +94,7 @@ namespace Magus.PlayerController
         {
             if (playerNumber == ConnectionManager.instance.playerData[base.Owner])
             {
+                RoundController.instance.EndRound();
                 DespawnPlayer(gameObject);
             }
         }

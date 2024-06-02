@@ -102,6 +102,7 @@ namespace Magus.Game
             else
             {
                 MatchController.instance.EndRound(0);
+                print("RoundEnded Tie");
             }
         }
 

@@ -41,7 +41,7 @@ namespace Magus.PlayerController
             GlobalPlayerController.instance.OnSkillPointsChanged -= OnSkillPointsChanged;
         }
 
-        private void OnSkillPointsChanged(int playerNumber)
+        private void OnSkillPointsChanged(int playerNumber, int prev, int next)
         {
             if (playerNumber != ConnectionManager.instance.playerData[base.LocalConnection]) return;
             SetSkillPointText(GlobalPlayerController.instance.GetSkillPoints(playerNumber));

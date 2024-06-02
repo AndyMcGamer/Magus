@@ -3,6 +3,7 @@ using Magus.Game;
 using Magus.Global;
 using Magus.MatchmakingSystem;
 using Magus.SceneManagement;
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace Magus.SceneSpecific
 
         [Header("Buttons")]
         [SerializeField] private Button startButton;
+        [SerializeField] private Image startButtonFrame;
         [SerializeField] private Button toggleButton;
         [SerializeField] private Button backButton;
 
@@ -41,6 +43,9 @@ namespace Magus.SceneSpecific
         [SerializeField] private TextMeshProUGUI lobbyNameText;
         [SerializeField] private TextMeshProUGUI joinCodeText;
         [SerializeField] private TextMeshProUGUI readyButtonText;
+
+        [Foldout("StartButtonColors"), SerializeField] private Color disabledColor;
+        [Foldout("StartButtonColors"), SerializeField] private Color enabledColor;
 
         private void OnEnable()
         {
@@ -149,7 +154,12 @@ namespace Magus.SceneSpecific
 
             }
 
-            if (LobbyManager.instance.IsHost) startButton.interactable = (allPlayersReady && LobbyManager.instance.Lobby.Players.Count == Constants.MAX_PLAYERS);
+            if (LobbyManager.instance.IsHost)
+            {
+                startButton.interactable = (allPlayersReady && LobbyManager.instance.Lobby.Players.Count == Constants.MAX_PLAYERS);
+                startButtonFrame.color = startButton.interactable ? Color.white : startButton.colors.disabledColor;
+                startButton.GetComponentInChildren<TextMeshProUGUI>().color = startButton.interactable ? enabledColor : disabledColor;
+            }
         }
 
         private void LobbyUpdate(object sender, LobbyManager.LobbyEventArgs e)

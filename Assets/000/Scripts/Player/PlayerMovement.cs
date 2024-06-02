@@ -56,6 +56,8 @@ namespace Magus.PlayerController
             moveInput = new(input.x, 0, input.y);
             moveInput.ConvertToIsometric(playerInfo.playerCamera.transform.eulerAngles.ScaleBy(Vector3.up));
 
+            playerInfo.playerAnim.targetSpeed = moveInput.sqrMagnitude;
+
             if(moveInput.sqrMagnitude > 0)
             {
                 playerInfo.stateManager.ChangeState(PlayerState.Moving);

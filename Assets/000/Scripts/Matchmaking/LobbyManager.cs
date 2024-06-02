@@ -509,13 +509,21 @@ namespace Magus.MatchmakingSystem
 
         private async Task UpdateHost()
         {
-            Lobby updatedLobby = await LobbyService.Instance.GetLobbyAsync(_lobby.Id);
-            _lobby = updatedLobby;
-            if (_playerId == _lobby.HostId)
+            try
             {
-                _isHost = true;
-                OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
+                Lobby updatedLobby = await LobbyService.Instance.GetLobbyAsync(_lobby.Id);
+                _lobby = updatedLobby;
+                if (_playerId == _lobby.HostId)
+                {
+                    _isHost = true;
+                    OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
+                }
             }
+            catch (LobbyServiceException)
+            {
+
+            }
+            
         }
 
         public async Task StartGame()

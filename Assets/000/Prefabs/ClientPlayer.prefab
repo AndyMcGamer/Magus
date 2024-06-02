@@ -629,6 +629,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2490321779143849506}
   - {fileID: 8808358473799125366}
   m_Father: {fileID: 6648932076825154543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4701,7 +4702,7 @@ MonoBehaviour:
   _componentIndexCache: 6
   _addedNetworkObject: {fileID: 1492763436120625470}
   _networkObjectCache: {fileID: 1492763436120625470}
-  rotationSpeed: 800
+  rotationSpeed: 1600
 --- !u!114 &6298204824120077878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4720,7 +4721,7 @@ MonoBehaviour:
   IgnoredParameters: []
   _animator: {fileID: 2745975098105094942}
   _smoothFloats: 1
-  _interpolation: 5
+  _interpolation: 2
   _clientAuthoritative: 1
   _sendToOwner: 0
 --- !u!114 &2468239647240931606
@@ -4730,7 +4731,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6102196079446024432}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08756109105cae54b9360a486d633e71, type: 3}
   m_Name: 
@@ -4738,6 +4739,8 @@ MonoBehaviour:
   _componentIndexCache: 8
   _addedNetworkObject: {fileID: 1492763436120625470}
   _networkObjectCache: {fileID: 1492763436120625470}
+  movementBlendSpeed: 0.08
+  targetSpeed: 0
 --- !u!1 &6165369991503801453
 GameObject:
   m_ObjectHideFlags: 0
@@ -5059,7 +5062,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2338397385046653109}
   - component: {fileID: 1508491437579564983}
-  - component: {fileID: 4245210606470757452}
+  - component: {fileID: 2500248639024958540}
   m_Layer: 0
   m_Name: PlayerCameraController
   m_TagString: Untagged
@@ -5075,14 +5078,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6742408405272571022}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.42660013, y: -0.33944437, z: 0.17670354, w: 0.8194912}
-  m_LocalPosition: {x: 6.083698, y: 14.287282, z: -6.0836954}
+  m_LocalRotation: {x: 0.27781588, y: -0.36497167, z: 0.1150751, w: 0.8811196}
+  m_LocalPosition: {x: 8.688419, y: 10.603644, z: -8.68842}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1146076872850532563}
   m_Father: {fileID: 2820871245219742560}
-  m_LocalEulerAnglesHint: {x: 55, y: -45, z: 0}
+  m_LocalEulerAnglesHint: {x: 35, y: -45, z: 0}
 --- !u!114 &1508491437579564983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5090,7 +5093,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6742408405272571022}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
   m_Name: 
@@ -5101,7 +5104,7 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 0
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 4202711492782105752}
+  m_LookAt: {fileID: 2820871245219742560}
   m_Follow: {fileID: 2820871245219742560}
   m_Lens:
     FieldOfView: 60
@@ -5122,7 +5125,7 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1146076872850532563}
---- !u!114 &4245210606470757452
+--- !u!114 &2500248639024958540
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5131,14 +5134,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 6742408405272571022}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2fba25a5cd15594e8f050a11e386c80, type: 3}
+  m_Script: {fileID: 11500000, guid: 04341aecb25ed0847aa55198bdd351e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ConfineMode: 1
-  m_BoundingVolume: {fileID: 0}
-  m_BoundingShape2D: {fileID: 0}
-  m_ConfineScreenEdges: 1
+  m_CollideAgainst:
+    serializedVersion: 2
+    m_Bits: 55
+  m_AllowTags:
+  - Untagged
+  - Respawn
+  - Finish
+  - EditorOnly
+  - MainCamera
+  - Player
+  - GameController
+  m_TransparentLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_MinimumDistanceFromTarget: 0.1
+  m_AvoidObstacles: 1
+  m_DistanceLimit: 0
+  m_MinimumOcclusionTime: 0
+  m_CameraRadius: 0.1
+  m_Strategy: 0
+  m_MaximumEffort: 8
+  m_SmoothingTime: 0
   m_Damping: 0
+  m_DampingWhenOccluded: 0
+  m_OptimalTargetDistance: 1.5
 --- !u!1 &6860454782197895523
 GameObject:
   m_ObjectHideFlags: 0
@@ -5722,7 +5745,7 @@ MonoBehaviour:
   characterController: {fileID: 5275395432786714763}
   playerCollider: {fileID: 4840172358601279847}
   playerModel: {fileID: 8838487527833896094}
-  playerAnimator: {fileID: 2745975098105094942}
+  playerAnimator: {fileID: 6298204824120077878}
   playerTag: 
   moveSpeed: 5
   lastMove: {x: 0, y: 0, z: 0}
@@ -6705,6 +6728,41 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &8793923815376735056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2490321779143849506}
+  m_Layer: 0
+  m_Name: MainArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2490321779143849506
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8793923815376735056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4613227792904357438}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 15, y: 0}
+  m_SizeDelta: {x: 340, y: -20}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &8974384478915381974
 GameObject:
   m_ObjectHideFlags: 0

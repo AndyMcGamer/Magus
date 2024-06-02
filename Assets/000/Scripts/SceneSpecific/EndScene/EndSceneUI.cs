@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace Magus.SceneSpecific
 {
-    public class EndSceneUI : NetworkBehaviour
+    public class EndSceneUI : MonoBehaviour
     {
         [SerializeField] private GameEnd gameEnd;
 
@@ -34,16 +34,18 @@ namespace Magus.SceneSpecific
         private void OnEnable()
         {
             gameEnd.OnCountdownChanged += GameEnd_OnCountdownChanged;
-            gameEnd.OnWinnerLoaded += GameEnd_OnWinnerLoaded;
+            gameEnd.OnLoadWinner += LoadWinner;
         }
 
         private void OnDisable()
         {
             gameEnd.OnCountdownChanged -= GameEnd_OnCountdownChanged;
+            gameEnd.OnLoadWinner -= LoadWinner;
         }
 
-        private void GameEnd_OnWinnerLoaded(int winnerNumber)
+        private void LoadWinner(int playerNumber, int winnerNumber)
         {
+            print("WinnerLoaded");
             quitButton.interactable = true;
             var images = quitButton.GetComponentsInChildren<Image>();
             var text = quitButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -54,7 +56,7 @@ namespace Magus.SceneSpecific
             text.color = Color.white;
             string winner = ConnectionManager.instance.playerNames[winnerNumber];
             winnerName.text = winner;
-            if(winner == LobbyManager.instance.LocalPlayer.Data["PlayerName"].Value)
+            if(playerNumber == winnerNumber)
             {
                 outcomeText.text = "Won";
             }
@@ -66,21 +68,23 @@ namespace Magus.SceneSpecific
 
         private void GameEnd_OnCountdownChanged(float timer)
         {
+            print(timer);
             if (timer <= 0)
             {
                 QuitToLobby();
             }
         }
 
-        public async void QuitToLobby()
+        public void QuitToLobby()
         {
             if (quitting) return;
+
+            print("Quit");
 
             quitting = true;
             LobbyManager.instance.UpdateGameStatus(false);
 
             // Temporary -- should actually return to lobby
-            await LobbyManager.instance.LeaveLobby();
             Application.Quit();
         }
     }
