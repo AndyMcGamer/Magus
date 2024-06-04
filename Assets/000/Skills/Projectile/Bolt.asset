@@ -15,7 +15,8 @@ MonoBehaviour:
   <Name>k__BackingField: Bolt
   <Icon>k__BackingField: {fileID: 21300000, guid: 1d81636db7dcc5642bfdb6928598ffbd,
     type: 3}
-  <Description>k__BackingField: 
+  <Description>k__BackingField: The most basic of spells. Shoot a projectile forward,
+    dealing DMG damage on hit.
   <MaxLevel>k__BackingField: 10
   priority: 25
   spellTime:

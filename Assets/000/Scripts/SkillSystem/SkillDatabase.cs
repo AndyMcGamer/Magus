@@ -41,6 +41,11 @@ namespace Magus.Skills.SkillTree
             return null;
         }
 
+        public SkillNode FindNodeByName(string skillName)
+        {
+            return skills.FirstOrDefault(x => x.skillData.Name == skillName);
+        }
+
 #if UNITY_EDITOR
         private readonly string subFolderName = "/Prerequisites";
 

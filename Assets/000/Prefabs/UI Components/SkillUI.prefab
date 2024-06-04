@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1850242897366865123}
   - component: {fileID: 4192552273465514781}
   - component: {fileID: 884555314382873929}
+  - component: {fileID: 6994239677601809664}
   m_Layer: 0
   m_Name: PlusButton
   m_TagString: Untagged
@@ -132,6 +133,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &6994239677601809664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 576046019997204819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0e4ac13e7fabc4ca1375c7bdbb96a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillUI: {fileID: 1447356381197761727}
+  addButton: 1
 --- !u!1 &1540907280303519047
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 0.78431374}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -519,6 +534,7 @@ GameObject:
   - component: {fileID: 2018736875599911074}
   - component: {fileID: 1017721863701367731}
   - component: {fileID: 4663769509426945654}
+  - component: {fileID: 5967174769250016304}
   m_Layer: 0
   m_Name: Minusbutton
   m_TagString: Untagged
@@ -639,6 +655,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5967174769250016304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5588024095444605558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0e4ac13e7fabc4ca1375c7bdbb96a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillUI: {fileID: 1447356381197761727}
+  addButton: 0
 --- !u!1 &7014399671985101103
 GameObject:
   m_ObjectHideFlags: 0
@@ -905,7 +935,8 @@ MonoBehaviour:
   addButton: {fileID: 884555314382873929}
   subtractButton: {fileID: 4663769509426945654}
   regularBorderColor: {r: 0, g: 0, b: 0, a: 1}
-  activatedBorderColor: {r: 0.8784314, g: 0.654902, b: 0.10980392, a: 1}
+  activatedBorderColor: {r: 0.8679245, g: 0.7275853, b: 0.1760413, a: 1}
+  prereqBorderColor: {r: 0.8679245, g: 0.18422928, b: 0.18422928, a: 1}
   regularTextColor: {r: 1, g: 1, b: 1, a: 1}
   disabledTextColor: {r: 0.58431375, g: 0.58431375, b: 0.58431375, a: 1}
   skillSprite: {fileID: 5199123590245391633}
@@ -1123,7 +1154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.88235295}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

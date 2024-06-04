@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Magus.Game;
@@ -15,6 +16,7 @@ namespace Magus.Skills
     {
         public SkillNode skillNode;
         private PlayerControllerInfo playerInfo;
+        public PlayerControllerInfo PlayerInfo => playerInfo;
 
         [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI levelText;
@@ -26,8 +28,20 @@ namespace Magus.Skills
         [Header("Settings")]
         [SerializeField, Foldout("Border")] private Color regularBorderColor;
         [SerializeField, Foldout("Border")] private Color activatedBorderColor;
+        [SerializeField, Foldout("Border")] private Color prereqBorderColor;
         [SerializeField, Foldout("Level Text")] private Color regularTextColor;
         [SerializeField, Foldout("Level Text")] private Color disabledTextColor;
+
+        public event Action<bool> OnSkillUpdate;
+
+        public int SkillLevel
+        {
+            get
+            {
+                GlobalPlayerController.instance.GetSkillStatus(ConnectionManager.instance.playerData[playerInfo.LocalConnection]).TryGetValue(skillNode.skillData.Name, out int skillLevel);
+                return skillLevel;
+            }
+        }
 
         private bool unlocked;
 
@@ -75,7 +89,7 @@ namespace Magus.Skills
 
 
             bool previous = unlocked;
-            unlocked = CheckPrerequisites(playerNumber);
+            unlocked = playerInfo.skillManager.CheckPrerequisites(playerNumber, skillNode);
 
             if (unlocked != previous && !unlocked)
             {
@@ -95,31 +109,15 @@ namespace Magus.Skills
             }
         }
 
-        private bool CheckPrerequisites(int playerNumber)
-        {
-            bool passed = true;
-            foreach (var prereq in skillNode.prerequisites)
-            {
-                string skillName = prereq.skill.Name;
-                var skillStatus = GlobalPlayerController.instance.GetSkillStatus(playerNumber);
-                skillStatus.TryGetValue(skillName, out int skillLevel);
-                if (skillLevel < prereq.requiredLevel)
-                {
-                    passed = false;
-                    break;
-                }
-            }
-            return passed;
-        }
-
         public void UpdateSkillLevel(bool adding)
         {
             playerInfo.skillManager.UpdateSkill(skillNode.skillData.Name, adding);
+            OnSkillUpdate?.Invoke(adding);
         }
 
         public void ToggleBorder(bool activated)
         {
-            spriteBorder.color = activated ? activatedBorderColor : regularBorderColor;
+            spriteBorder.color = activated && unlocked ? activatedBorderColor : regularBorderColor;
         }
 
         private void ToggleLevelText(bool activated)

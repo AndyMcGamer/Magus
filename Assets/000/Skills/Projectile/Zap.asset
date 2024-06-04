@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 964a5134e59bf0b4c8940161e9ebc52e, type: 3}
-  m_Name: Slash
+  m_Name: Zap
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Slash
+  <Name>k__BackingField: Zap
   <Icon>k__BackingField: {fileID: 21300000, guid: 51f771c76ccdea54187db502a06b2f3f,
     type: 3}
-  <Description>k__BackingField: 
+  <Description>k__BackingField: Quickly slash in front of you. Deals DMG damage on
+    hit.
   <MaxLevel>k__BackingField: 10
   priority: 25
   spellTime:

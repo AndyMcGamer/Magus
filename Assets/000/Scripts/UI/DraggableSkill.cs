@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Magus.UserInterface
 {
-    public class DraggableSkill : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class DraggableSkill : MonoBehaviour
     {
         [SerializeField] private RectTransform rectTransform;
         [SerializeField] private Image maskImage;

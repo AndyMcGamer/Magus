@@ -19,6 +19,11 @@ namespace Magus.Skills
         public float[] moveRate;
         public float[] lifetime;
 
+        public override string GetDescription(int level)
+        {
+            string description = base.GetDescription(level);
+            return description.Replace(Constants.SKILL_DAMAGE, damage[level].ToString());
+        }
 
 #if UNITY_EDITOR
         public override void OnValidate()

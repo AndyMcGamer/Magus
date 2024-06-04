@@ -16,6 +16,10 @@ namespace Magus.Skills
         public virtual float[] Cost { get; protected set; }
         public virtual float[] Cooldown { get; protected set; }
 
+        public virtual string GetDescription(int level) {
+            return Description.Replace(Constants.SKILL_NAME, Name).Replace(Constants.SKILL_COOLDOWN, Cooldown[level].ToString()).Replace(Constants.SKILL_COST, Cost[level].ToString());
+        }
+
 #if UNITY_EDITOR
         public virtual void OnValidate()
         {

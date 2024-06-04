@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bda40aa48d3c02e4e9d82e87e4b70699, type: 3}
-  m_Name: BasicDash
+  m_Name: Step
   m_EditorClassIdentifier: 
   skillData: {fileID: 11400000, guid: d5fbbe11869289648bf130d7ae785835, type: 2}
   prerequisites:

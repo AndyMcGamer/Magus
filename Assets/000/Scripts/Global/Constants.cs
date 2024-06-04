@@ -32,7 +32,7 @@ namespace Magus.Global
         /// <summary>
         /// Number of rounds needed to win the match
         /// </summary>
-        public const int NUM_WINS_NEEDED = 1;
+        public const int NUM_WINS_NEEDED = 3;
 
         /// <summary>
         /// Maximum number of rounds in a match
@@ -73,5 +73,14 @@ namespace Magus.Global
             Animator.StringToHash("Attack04"),
         };
 
+        public const string SKILL_COOLDOWN = "CD";
+        public const string SKILL_NAME = "NAME";
+        public const string SKILL_COST = "COST";
+        public const string SKILL_DAMAGE = "DMG";
+        public const string SKILL_DISTANCE = "DIST";
+        public const string SKILL_STAT = "STAT";
+        public const string SKILL_AMOUNT = "AMT";
+
+        public const string RESOURCE_NAME = "Mana";
     }
 }

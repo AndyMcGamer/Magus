@@ -3,6 +3,7 @@ using Magus.Game;
 using Magus.Global;
 using Magus.Multiplayer;
 using Magus.Skills;
+using Magus.Skills.SkillTree;
 using NaughtyAttributes;
 using System;
 using System.Collections;
@@ -44,7 +45,6 @@ namespace Magus.PlayerController
         {
             base.OnStartClient();
             if (!base.IsOwner) return;
-            print("Is Owner");
             RebuildSkillLists();
             GlobalPlayerController.instance.OnSkillUpdate += SkillUpdated;
             GlobalPlayerController.instance.OnSkillAdded += OnSkillAdded;
@@ -115,6 +115,34 @@ namespace Magus.PlayerController
             // Refund points
             GlobalPlayerController.instance.ChangeSkillPoints(playerNumber, skillLevel);
             OnSkillUpdate?.Invoke(playerNumber, skillName);
+        }
+
+        public bool CheckPrerequisite(SkillPrerequisite prereq)
+        {
+            var skillStatus = GlobalPlayerController.instance.GetSkillStatus(ConnectionManager.instance.playerData[playerInfo.LocalConnection]);
+            return CheckPrerequisite(skillStatus, prereq);
+        }
+
+        private bool CheckPrerequisite(Dictionary<string, int> skillStatus, SkillPrerequisite prereq)
+        {
+            string skillName = prereq.skill.Name;
+            skillStatus.TryGetValue(skillName, out int skillLevel);
+            return skillLevel >= prereq.requiredLevel;
+        }
+
+        public bool CheckPrerequisites(int playerNumber, SkillNode skillNode)
+        {
+            bool passed = true;
+            var skillStatus = GlobalPlayerController.instance.GetSkillStatus(playerNumber);
+            foreach (var prereq in skillNode.prerequisites)
+            {
+                if (!CheckPrerequisite(skillStatus, prereq))
+                {
+                    passed = false;
+                    break;
+                }
+            }
+            return passed;
         }
 
         public void ActivateSkill(int skillNumber)

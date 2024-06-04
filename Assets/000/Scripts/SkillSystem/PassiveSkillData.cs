@@ -15,6 +15,12 @@ namespace Magus.Skills
         public StatModifierList[] statModifiers;
 
         public PassiveCondition conditions;
+
+        public override string GetDescription(int level)
+        {
+            return base.GetDescription(level);
+        }
+
 #if UNITY_EDITOR
         public override void OnValidate()
         {

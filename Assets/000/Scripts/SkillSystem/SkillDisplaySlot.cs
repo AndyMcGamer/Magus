@@ -14,10 +14,11 @@ namespace Magus.Skills
 {
     public class SkillDisplaySlot : MonoBehaviour, IDropHandler
     {
-        [SerializeField] private PlayerSkillManager skillManager;
+        [SerializeField] public PlayerSkillManager skillManager;
         [SerializeField] private InputProcessor inputProcessor;
         [SerializeField] private int skillNumber;
         [SerializeField] private DraggableSkill iconMask;
+        public DraggableSkill DraggableSkill => iconMask;
         [SerializeField] private Image skillIcon;
         [SerializeField] private TextMeshProUGUI keyPrompt;
         [SerializeField] private GameObject disabledImage;
@@ -27,9 +28,9 @@ namespace Magus.Skills
         private ActiveSkill currentActiveSkill;
 
         private string ActionName => $"Skill_{skillNumber}";
-        private int Index => skillNumber - 1;
+        public int Index => skillNumber - 1;
 
-        private int SkillLevel => GlobalPlayerController.instance.GetSkillStatus(ConnectionManager.instance.playerData[skillManager.LocalConnection])[currentActiveSkill.skillData.Name];
+        public int SkillLevel => GlobalPlayerController.instance.GetSkillStatus(ConnectionManager.instance.playerData[skillManager.LocalConnection])[currentActiveSkill.skillData.Name];
 
         private void Awake()
         {

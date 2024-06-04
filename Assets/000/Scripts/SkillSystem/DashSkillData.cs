@@ -20,6 +20,12 @@ namespace Magus.Skills
         public float[] dashDistance;
         public float[] dashDuration;
 
+        public override string GetDescription(int level)
+        {
+            string description = base.GetDescription(level);
+            return description.Replace(Constants.SKILL_DISTANCE, dashDistance[level].ToString());
+        }
+
 #if UNITY_EDITOR
         public override void OnValidate()
         {
