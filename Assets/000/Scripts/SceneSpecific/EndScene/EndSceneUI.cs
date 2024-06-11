@@ -1,6 +1,7 @@
 using FishNet.Object;
 using Magus.MatchmakingSystem;
 using Magus.Multiplayer;
+using Magus.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -29,6 +30,12 @@ namespace Magus.SceneSpecific
                 image.color = quitButton.colors.disabledColor;
             }
             text.color = quitButton.colors.disabledColor;
+            Enter();
+        }
+
+        private async void Enter()
+        {
+            await Fader.instance.FadeOut(0.75f, DG.Tweening.Ease.InSine);
         }
 
         private void OnEnable()
