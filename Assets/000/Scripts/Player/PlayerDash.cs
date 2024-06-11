@@ -1,4 +1,5 @@
 using DG.Tweening;
+using FishNet.Object;
 using Magus.Global;
 using Magus.Skills;
 using System.Collections;
@@ -27,7 +28,7 @@ namespace Magus.PlayerController
             Vector3 endPosition = transform.position + dashDirectionWorld * dashDistance;
             targetPosition = transform.position;
 
-            dashTween = DOTween.To(() => targetPosition, x => targetPosition = x, endPosition, dashTime).SetEase(dashSkill.easeFunction).OnKill(() => { dashTween = null; });
+            dashTween = DOTween.To(() => targetPosition, x => targetPosition = x, endPosition, dashTime).SetEase(dashSkill.easeFunction).OnKill(() => { dashTween = null; Physics.IgnoreLayerCollision(Constants.PLAYER_ONE_LAYER, Constants.PLAYER_TWO_LAYER, false); });
         }
 
         private void Update()
