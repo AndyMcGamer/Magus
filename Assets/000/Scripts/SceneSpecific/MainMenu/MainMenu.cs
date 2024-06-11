@@ -1,5 +1,6 @@
 using Magus.MatchmakingSystem;
 using Magus.SceneManagement;
+using Magus.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -60,13 +61,15 @@ namespace Magus.SceneSpecific
             }
         }
 
-        public void GoToScreen(string screenName)
+        public async void GoToScreen(string screenName)
         {
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InOutSine, false);
             DisableAllScreens();
             lobbyMenuUI.ResetScreens();
             var screen = System.Array.Find(mainMenuScreens, x => x.name == screenName);
             screen.screen.SetActive(true);
             CancelEditUsername();
+            await Fader.instance.FadeOut(0.75f, DG.Tweening.Ease.InOutSine, false);
         }
 
         public void GoToScene(string sceneName)
@@ -99,8 +102,9 @@ namespace Magus.SceneSpecific
             usernameText.text = e;
         }
 
-        public void StartTraining()
+        public async void StartTraining()
         {
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InOutSine);
             trainingStarter.StartTrainingRoom();
         }
 

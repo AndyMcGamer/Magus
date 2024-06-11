@@ -1,4 +1,5 @@
 using Magus.MatchmakingSystem;
+using Magus.UserInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace Magus.SceneSpecific
 
         public async void RequestCreateLobby()
         {
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InSine);
+
             string defaultLobbyName = $"{PlayerInfoManager.instance.PlayerInfo.username}'s Lobby";
             if (defaultLobbyName.Length > 30) defaultLobbyName = PlayerInfoManager.instance.PlayerInfo.username[..22] + "'s Lobby";
             string lobbyName = string.IsNullOrWhiteSpace(lobbyNameText.text) ? defaultLobbyName : lobbyNameText.text;
@@ -34,6 +37,7 @@ namespace Magus.SceneSpecific
             if (lobbyName.Length > 30) lobbyName = lobbyName[..30];
             
             LobbyServiceException e = await LobbyManager.instance.CreateLobbyInstance(lobbyName, privateToggle.isOn);
+
             if (e != null)
             {
                 hostErrorText.text = e.ErrorCode switch
@@ -44,11 +48,14 @@ namespace Magus.SceneSpecific
                     16007 => "lobby already exists",
                     _ => "an error occured with your request",
                 };
+                await Fader.instance.FadeOut(0.75f, DG.Tweening.Ease.OutSine);
             }
         }
 
         public async void RequestJoinLobby()
         {
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InSine);
+
             LobbyServiceException e = await LobbyManager.instance.JoinLobbyInstance(joinCodeText.text);
             if(e != null)
             {
@@ -61,6 +68,7 @@ namespace Magus.SceneSpecific
                     16010 => "error: invalid join code",
                     _ => "an error occured with your request",
                 };
+                await Fader.instance.FadeOut(0.5f, DG.Tweening.Ease.OutSine);
             }
         }
 

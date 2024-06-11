@@ -3,6 +3,7 @@ using Magus.Game;
 using Magus.Global;
 using Magus.MatchmakingSystem;
 using Magus.SceneManagement;
+using Magus.UserInterface;
 using NaughtyAttributes;
 using System;
 using System.Collections;
@@ -41,7 +42,7 @@ namespace Magus.SceneSpecific
 
         [Header("Shared")]
         [SerializeField] private TextMeshProUGUI lobbyNameText;
-        [SerializeField] private TextMeshProUGUI joinCodeText;
+        [SerializeField] private TMP_InputField joinCodeText;
         [SerializeField] private TextMeshProUGUI readyButtonText;
 
         [Foldout("StartButtonColors"), SerializeField] private Color disabledColor;
@@ -67,7 +68,13 @@ namespace Magus.SceneSpecific
 
         private void Awake()
         {
+            StartLobby();
+        }
+
+        private async void StartLobby()
+        {
             UpdateLobbyUI();
+            await Fader.instance.FadeOut(0.5f, DG.Tweening.Ease.OutSine);
         }
 
         private void UpdateLobbyUI()
@@ -88,7 +95,7 @@ namespace Magus.SceneSpecific
             }
             readyButtonText.text = bool.Parse(LobbyManager.instance.LocalPlayer.Data["ReadyCheck"].Value) ? "Cancel" : "Ready";
             lobbyNameText.text = LobbyManager.instance.Lobby.Name;
-            joinCodeText.text = $"Join Code: {LobbyManager.instance.LobbyCode}";
+            joinCodeText.text = $"{LobbyManager.instance.LobbyCode}";
 
             kickIcon1.SetActive(false);
             kickIcon2.SetActive(false);
@@ -169,23 +176,30 @@ namespace Magus.SceneSpecific
 
         private void LobbyKicked(object sender, LobbyManager.LobbyEventArgs e)
         {
-            SceneSwitcher.instance.LoadScene("MainMenu");
+            GotoMain();
         }
 
         private void LeftLobby(object sender, EventArgs e)
         {
-            SceneSwitcher.instance.LoadScene("MainMenu");
+            GotoMain();
         }
 
         private void LobbyDeleted(object sender, EventArgs e)
         {
+            GotoMain();
+        }
+
+        private async void GotoMain()
+        {
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InSine);
             SceneSwitcher.instance.LoadScene("MainMenu");
         }
 
-        private void GameStarted(object sender, EventArgs e)
+        private async void GameStarted(object sender, EventArgs e)
         {
             LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_1V1, (int)GameMode.Standard } };
             LobbyManager.instance.UpdateReadyCheck(false);
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.OutSine, false);
             SceneSwitcher.instance.LoadGlobalNetworkedScene("LoadingScene", loadParams);
         }
 
@@ -219,6 +233,7 @@ namespace Magus.SceneSpecific
                 return;
             }
 
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InSine, false);
             await LobbyManager.instance.StartGame();
         }
 

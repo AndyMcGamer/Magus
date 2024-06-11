@@ -6,6 +6,7 @@ using Magus.Game;
 using Magus.Global;
 using Magus.Multiplayer;
 using Magus.SceneManagement;
+using Magus.UserInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +26,9 @@ namespace Magus.SceneSpecific
         public event Action<float> OnCountdownChanged;
 
         private bool activatedSceneChange;
-        private GameMode gameMode;
+        [SerializeField] private GameMode gameMode;
+
+        private WaitForSeconds zeroPointFive = new(0.75f);
 
         private void Awake()
         {
@@ -75,6 +78,7 @@ namespace Magus.SceneSpecific
                 neededTrainingRooms = minPlayers;
 
                 gameMode = (GameMode)serverParams[1];
+                MatchController.instance.SetMode(gameMode);
                 return;
             }
             loadedScene = args.LoadedScenes.FirstOrDefault(x => x.name == "TrainingRoom");
@@ -115,12 +119,35 @@ namespace Magus.SceneSpecific
             {
                 if(next <= 0 && !activatedSceneChange)
                 {
-                    GlobalPlayerController.instance.ClearTrainingRooms();
-                    SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, ReplaceOption.None);
-                    SceneSwitcher.instance.PreloadNetworkScenes("TrainingRoom");
                     activatedSceneChange = true;
+
+                    StartCoroutine(Fade());
                 }
             }
+        }
+
+        private IEnumerator Fade()
+        {
+            GlobalPlayerController.instance.ClearTrainingRooms();
+            SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, ReplaceOption.None);
+            
+            Client_Fade(0.5f);
+            yield return zeroPointFive;
+
+            SceneSwitcher.instance.PreloadNetworkScenes("TrainingRoom");
+
+        }
+
+        [ObserversRpc]
+        private void Client_Fade(float time)
+        {
+            Client_Fade_Async(time);
+        }
+
+        [Client]
+        private async void Client_Fade_Async(float time)
+        {
+            await Fader.instance.FadeIn(time: time, easeFunction: DG.Tweening.Ease.InSine);
         }
 
         private void Update()

@@ -88,15 +88,21 @@ namespace Magus.Game
             }
         }
 
+        public void SetMode(GameMode mode)
+        {
+            gameMode = mode;
+            SetGameMode(mode);
+        }
+
         public void StartMatch(GameMode mode, int minPlayers)
         {
             matchStarted = true;
-            this.minPlayers = minPlayers;
             gameMode = mode;
+            SetGameMode(mode);
+            this.minPlayers = minPlayers;
             roundNumber = 1;
             RoundController.instance.StartRound();
             SetRoundNumber(roundNumber);
-            SetGameMode(mode);
             ResetPlayerWins();
 
             switch (gameMode)
@@ -164,7 +170,7 @@ namespace Magus.Game
             }
         }
 
-        [ObserversRpc(ExcludeServer = true)]
+        [ObserversRpc(ExcludeServer = false)]
         private void SetPlayerWins(int playerNumber, int wins)
         {
             if(playerNumber == 1)
@@ -178,13 +184,13 @@ namespace Magus.Game
         }
 
 
-        [ObserversRpc(ExcludeServer = true)]
+        [ObserversRpc(ExcludeServer = false)]
         private void SetRoundNumber(int roundNumber)
         {
             this.roundNumber = roundNumber;
         }
 
-        [ObserversRpc(ExcludeServer = true)]
+        [ObserversRpc(ExcludeServer = false)]
         private void SetGameMode(GameMode gameMode)
         {
             this.gameMode = gameMode;

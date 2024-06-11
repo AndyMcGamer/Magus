@@ -81,6 +81,17 @@ namespace Magus.PlayerController
             }
         }
 
+        public void OnZoom(InputAction.CallbackContext value)
+        {
+            float scrollValue = value.ReadValue<float>();
+
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            scrollValue /= 120f;
+#endif
+
+            playerInfo.playerCamControl.OnZoom(scrollValue);
+        }
+
         public void OnSkill_1(InputAction.CallbackContext value)
         {
             if(value.started)

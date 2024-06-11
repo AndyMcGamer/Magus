@@ -31,6 +31,8 @@ namespace Magus.Skills
             if (!displaySlot.DraggableSkill.gameObject.activeSelf) return;
             displaySlot.DraggableSkill.OnBeginDrag(eventData);
             OnStartDrag?.Invoke(this);
+            selectionFrame.gameObject.SetActive(false);
+            OnStopHover?.Invoke();
         }
 
         public void OnDrag(PointerEventData eventData)

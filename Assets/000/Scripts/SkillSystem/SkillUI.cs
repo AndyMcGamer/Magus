@@ -129,7 +129,8 @@ namespace Magus.Skills
         {
             bool inTraining = RoundController.instance.gameStage == GameStage.Training;
             addButton.interactable = activated && level < skillNode.skillData.MaxLevel && GlobalPlayerController.instance.GetSkillPoints(playerNumber) > 0 && inTraining;
-            subtractButton.interactable = activated && level > 0 && inTraining;
+            GlobalPlayerController.instance.confirmedSkills.TryGetValue(skillNode.skillData.Name, out int minLevel);
+            subtractButton.interactable = activated && level > minLevel && inTraining;
         }
 
         private void ToggleDisableMask(bool activated)

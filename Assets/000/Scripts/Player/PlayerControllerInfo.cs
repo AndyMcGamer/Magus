@@ -25,6 +25,8 @@ namespace Magus.PlayerController
         public PlayerSkillManager skillManager;
         public PlayerAttack playerAttack;
         public PlayerDash playerDash;
+        public PlayerCameraController playerCamControl;
+        public PlayerModelController modelController;
         public CinemachineVirtualCamera playerCamera;
         public CharacterController characterController;
         public Collider playerCollider;
@@ -35,6 +37,10 @@ namespace Magus.PlayerController
         public string playerTag;
         public float moveSpeed = 5f;
         public Vector3 lastMove;
+
+        private WaitForSeconds fiveSeconds = new (5f);
+
+        private bool roundOver;
 
         private void Awake()
         {
@@ -48,8 +54,9 @@ namespace Magus.PlayerController
             skillManager.Init(this);
             playerAttack.Init(this);
             playerDash.Init(this);
-
-            
+            playerCamControl.Init(this);
+            modelController.Init(this);
+            roundOver = false;
         }
 
         private void OnDestroy()
@@ -71,14 +78,13 @@ namespace Magus.PlayerController
             gameObject.tag = playerTag;
             playerCollider.tag = playerTag;
             gameObject.layer = HelperFunctions.GetPlayerLayer(playerNumber);
+
             if (!base.IsOwner)
             {
                 enabled = false;
             }
             else
             {
-                playerCamera.enabled = true;
-                playerCamera.Priority = 10;
                 SetTag(gameObject.tag);
             }
         }
@@ -90,13 +96,35 @@ namespace Magus.PlayerController
             playerCollider.tag = tag;
         }
 
+        [Server]
         private void PlayerDeath(int playerNumber)
         {
-            if (playerNumber == ConnectionManager.instance.playerData[base.Owner])
+            if (playerNumber != ConnectionManager.instance.playerData[base.Owner])
             {
-                RoundController.instance.EndRound();
-                DespawnPlayer(gameObject);
+                return;
             }
+            if (roundOver) return;
+            roundOver = true;
+            StartCoroutine(EndRound());
+            Die(playerNumber);
+        }
+
+        private IEnumerator EndRound()
+        {
+            RoundController.instance.SetChangeTimer(false);
+            yield return fiveSeconds;
+            RoundController.instance.EndRound();
+        }
+
+        [ObserversRpc]
+        private void Die(int playerNumber)
+        {
+            playerCollider.enabled = false;
+            if (playerNumber != ConnectionManager.instance.playerData[base.Owner])
+            {
+                return;
+            }
+            stateManager.ChangeState(PlayerState.Dead);
         }
 
         [ServerRpc(RequireOwnership = false)]

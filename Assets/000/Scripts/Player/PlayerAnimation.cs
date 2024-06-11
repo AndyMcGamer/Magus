@@ -43,6 +43,7 @@ namespace Magus.PlayerController
                 case PlayerState.Frozen:
                     break;
                 case PlayerState.Dead:
+                    playerInfo.playerAnimator.CrossFadeInFixedTime("Die", 0.1f * currentLength, 0);
                     break;
                 default:
                     break;

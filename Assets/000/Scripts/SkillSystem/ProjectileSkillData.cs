@@ -19,6 +19,8 @@ namespace Magus.Skills
         public float[] moveRate;
         public float[] lifetime;
 
+        public Vector3 spawnOffset;
+
         public override string GetDescription(int level)
         {
             string description = base.GetDescription(level);

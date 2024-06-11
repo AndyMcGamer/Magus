@@ -11,6 +11,8 @@ namespace Magus.PlayerController
 
         [Header("Settings")]
         [SerializeField] private float gravity;
+        [SerializeField] private Transform raycastSource;
+        [SerializeField] private LayerMask groundLayer;
 
         private Vector3 moveInput;
         private Vector3 Gravity => gravity * Vector3.down;
@@ -71,9 +73,20 @@ namespace Magus.PlayerController
 
         private void Update()
         {
-            if (!canMove) return;
+            var pScene = gameObject.scene.GetPhysicsScene();
+            bool grounded = pScene.Raycast(raycastSource.position, Vector3.down, 0.3f, groundLayer);
 
-            Vector3 movement = (moveInput * playerInfo.moveSpeed + Gravity) * Time.deltaTime;
+            if (!grounded)
+            {
+                playerInfo.characterController.Move(Gravity * Time.deltaTime);
+            }
+
+            if (!canMove)
+            {
+                return;
+            }
+
+            Vector3 movement = (moveInput * playerInfo.moveSpeed) * Time.deltaTime;
             playerInfo.characterController.Move(movement);
             
         }

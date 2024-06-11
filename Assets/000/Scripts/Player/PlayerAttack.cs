@@ -16,7 +16,7 @@ namespace Magus.PlayerController
     {
         public void CastProjectileSkill(ProjectileSkillData skillData)
         {
-            Vector3 position = transform.position + Vector3.up * 0.5f;
+            Vector3 position = transform.position + skillData.spawnOffset;
             Vector3 direction = playerInfo.lastMove;
 
             int playerNumber = ConnectionManager.instance.playerData[base.LocalConnection];

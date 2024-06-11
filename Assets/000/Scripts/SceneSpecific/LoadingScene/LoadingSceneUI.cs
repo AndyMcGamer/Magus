@@ -1,3 +1,4 @@
+using Magus.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,6 +10,12 @@ namespace Magus.SceneSpecific
     {
         [SerializeField] private GameLoader gameLoader;
         [SerializeField] private TextMeshProUGUI countdownText;
+
+
+        private void Awake()
+        {
+            EnterScene();
+        }
 
         private void OnEnable()
         {
@@ -23,6 +30,11 @@ namespace Magus.SceneSpecific
         private void UpdateCountdown(float countdownValue)
         {
             countdownText.text = Mathf.RoundToInt(countdownValue).ToString();
+        }
+
+        private async void EnterScene()
+        {
+            await Fader.instance.FadeOut(0.75f, DG.Tweening.Ease.InOutSine);
         }
     }
 }

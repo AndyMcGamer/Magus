@@ -12,6 +12,8 @@ namespace Magus.SceneSpecific
         private void Awake()
         {
             RoundController.instance.OnStageTimerChanged += StageTimerChanged;
+            StageTimerChanged(RoundController.instance.StageTimer);
+
         }
 
         private void OnDestroy()

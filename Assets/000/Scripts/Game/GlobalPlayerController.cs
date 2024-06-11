@@ -35,6 +35,8 @@ namespace Magus.Game
 
         public Dictionary<string, int> GetSkillStatus(int playerNumber) => (playerNumber == 1) ? skillStatus_PlayerOne.Collection : skillStatus_PlayerTwo.Collection;
 
+        public Dictionary<string, int> confirmedSkills;
+
         /// <summary>
         /// Update Skill: playerNumber, skillName
         /// </summary>
@@ -76,6 +78,8 @@ namespace Magus.Game
             trainingRooms = new();
 
             hotbarSkills = new string[Constants.MAX_HOTBAR_SKILLS];
+
+            confirmedSkills = new();
 
             health_PlayerOne.OnChange += Health_PlayerOne_OnChange;
             health_PlayerTwo.OnChange += Health_PlayerTwo_OnChange;
@@ -181,6 +185,18 @@ namespace Magus.Game
                     OnPlayerDeath?.Invoke(2);
                 }
             }
+        }
+
+        [ObserversRpc(ExcludeServer = false)]
+        public void LockSkills()
+        {
+            int playerNumber = ConnectionManager.instance.playerData[base.LocalConnection];
+            confirmedSkills = new(GetSkillStatus(playerNumber));
+        }
+
+        public void RefundSkills()
+        {
+            confirmedSkills = new();
         }
 
         public void UpdateHotbar(int hotbarIndex)

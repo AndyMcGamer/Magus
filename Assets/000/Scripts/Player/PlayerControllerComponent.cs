@@ -17,7 +17,7 @@ namespace Magus.PlayerController
             }
         }
 
-        public void Init(PlayerControllerInfo playerInfoManager)
+        public virtual void Init(PlayerControllerInfo playerInfoManager)
         {
             playerInfo = playerInfoManager;
         }

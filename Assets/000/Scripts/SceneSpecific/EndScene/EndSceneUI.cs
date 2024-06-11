@@ -45,7 +45,6 @@ namespace Magus.SceneSpecific
 
         private void LoadWinner(int playerNumber, int winnerNumber)
         {
-            print("WinnerLoaded");
             quitButton.interactable = true;
             var images = quitButton.GetComponentsInChildren<Image>();
             var text = quitButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -56,13 +55,13 @@ namespace Magus.SceneSpecific
             text.color = Color.white;
             string winner = ConnectionManager.instance.playerNames[winnerNumber];
             winnerName.text = winner;
-            if(playerNumber == winnerNumber)
+            if(playerNumber == winnerNumber) 
             {
-                outcomeText.text = "Won";
+                outcomeText.text = "You Won";
             }
             else
             {
-                outcomeText.text = "Lost";
+                outcomeText.text = "You Lost";
             }
         }
 

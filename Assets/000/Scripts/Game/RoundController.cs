@@ -2,6 +2,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Magus.Global;
 using Magus.SceneManagement;
+using Magus.UserInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Magus.Game
     public enum GameStage
     {
         Training,
+        Transition,
         Battle,
         SuddenDeath
     }
@@ -22,10 +24,16 @@ namespace Magus.Game
         public static RoundController instance;
 
         private readonly SyncVar<float> stageTimer = new SyncVar<float>();
+        public float StageTimer => stageTimer.Value;
+
         public event Action<float> OnStageTimerChanged;
         private bool changeStageTimer;
 
         public GameStage gameStage;
+
+        public event Action OnGameStageChanged;
+
+        private WaitForSeconds pointSevenFive = new(0.75f);
 
         private void Awake()
         {
@@ -59,10 +67,13 @@ namespace Magus.Game
                     switch (gameStage)
                     {
                         case GameStage.Training:
-                            SwitchToBattle();
+                            SwitchToTransition();
                             break;
                         case GameStage.Battle:
-                            SwitchToTraining();
+                            StartCoroutine(SwitchToTraining());
+                            break;
+                        case GameStage.Transition:
+                            StartCoroutine(SwitchToBattle());
                             break;
                         case GameStage.SuddenDeath:
                             changeStageTimer = false;
@@ -73,21 +84,45 @@ namespace Magus.Game
             }
         }
 
-        private void SwitchToBattle()
+        private void SwitchToTransition()
         {
             changeStageTimer = true;
+            SetStageTimer(Constants.TRANSITION_TIME);
+            gameStage = GameStage.Transition;
+            SetGameStage(gameStage);
+
+            GlobalPlayerController.instance.LockSkills();
+        }
+
+        private IEnumerator SwitchToBattle()
+        {
+            ClientFade();
+            yield return pointSevenFive;
+
+            // Will be changed with PlayerStats
             GlobalPlayerController.instance.SetPlayerHealth(1, 100);
             GlobalPlayerController.instance.SetPlayerHealth(2, 100);
+
             SetStageTimer(Constants.BATTLE_TIME);
             gameStage = GameStage.Battle;
             SetGameStage(gameStage);
+
             SceneSwitcher.instance.LoadGlobalNetworkedScene("HealthBars", false, FishNet.Managing.Scened.ReplaceOption.All);
             SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, FishNet.Managing.Scened.ReplaceOption.None);
             SceneSwitcher.instance.LoadGlobalNetworkedScene("BattleScene", true, FishNet.Managing.Scened.ReplaceOption.None);
         }
 
-        private void SwitchToTraining()
+        [Server]
+        public void SetChangeTimer(bool changeTimer)
         {
+            changeStageTimer = changeTimer;
+        }
+
+        private IEnumerator SwitchToTraining()
+        {
+            ClientFade();
+            yield return pointSevenFive;
+
             changeStageTimer = false;
             float p1Health = GlobalPlayerController.instance.GetCurrentHealth(1);
             float p2Health = GlobalPlayerController.instance.GetCurrentHealth(2);
@@ -106,12 +141,21 @@ namespace Magus.Game
             }
         }
 
-        [ServerRpc(RequireOwnership = false)]
         public void EndRound()
         {
-            SwitchToTraining();
+            StartCoroutine(SwitchToTraining());
         }
 
+        [ObserversRpc]
+        private void ClientFade()
+        {
+            ClientFadeAsync();
+        }
+
+        private async void ClientFadeAsync()
+        {
+            await Fader.instance.FadeIn(easeFunction: DG.Tweening.Ease.OutSine);
+        }
 
         [Server]
         private void SetStageTimer(float time)
@@ -119,6 +163,7 @@ namespace Magus.Game
             stageTimer.Value = time;
         }
 
+        [Server]
         public void StartRound()
         {
             gameStage = GameStage.Training;
@@ -149,10 +194,11 @@ namespace Magus.Game
             }
         }
 
-        [ObserversRpc(ExcludeServer = true)]
+        [ObserversRpc(ExcludeServer = false)]
         private void SetGameStage(GameStage stage)
         {
             gameStage = stage;
+            OnGameStageChanged?.Invoke();
         }
     }
 }

@@ -98,3 +98,4 @@ MonoBehaviour:
   - 0.3
   - 0.3
   - 0.3
+  spawnOffset: {x: 0, y: 0.75, z: 0}
