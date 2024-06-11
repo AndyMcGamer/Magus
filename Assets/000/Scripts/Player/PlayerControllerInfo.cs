@@ -120,6 +120,7 @@ namespace Magus.PlayerController
         private void Die(int playerNumber)
         {
             playerCollider.enabled = false;
+            characterController.enabled = false;
             if (playerNumber != ConnectionManager.instance.playerData[base.Owner])
             {
                 return;
