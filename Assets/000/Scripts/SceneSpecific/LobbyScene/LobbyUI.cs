@@ -72,6 +72,7 @@ namespace Magus.SceneSpecific
         private void Awake()
         {
             StartLobby();
+            print(LobbyManager.instance.LocalPlayer.AllocationId);
         }
 
         private async void StartLobby()
@@ -200,6 +201,7 @@ namespace Magus.SceneSpecific
 
         private async void GameStarted(object sender, EventArgs e)
         {
+            print("Starting Game");
             LoadParams loadParams = new LoadParams() { ServerParams = new object[] { Constants.MIN_PLAYERS_1V1, (int)GameMode.Standard } };
             LobbyManager.instance.UpdateReadyCheck(false);
             await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.OutSine, false);
@@ -221,6 +223,7 @@ namespace Magus.SceneSpecific
 
         public async void StartGame()
         {
+            print("Starting Game");
             bool allPlayersReady = true;
             foreach (var player in LobbyManager.instance.Lobby.Players)
             {

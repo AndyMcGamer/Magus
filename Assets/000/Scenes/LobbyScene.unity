@@ -334,7 +334,7 @@ MonoBehaviour:
   readyButtonText: {fileID: 1124591420}
   disabledColor: {r: 0.83137256, g: 0.83137256, b: 0.83137256, a: 0.92156863}
   enabledColor: {r: 0.9019608, g: 0.9019608, b: 0.9019608, a: 1}
-  localPlayerColor: {r: 0.003025995, g: 0.6415094, b: 0.16046163, a: 1}
+  localPlayerColor: {r: 0.85882354, g: 0.6891337, b: 0, a: 1}
   remotePlayerColor: {r: 0.764151, g: 0.12156863, b: 0.0627451, a: 1}
 --- !u!1 &122697008
 GameObject:

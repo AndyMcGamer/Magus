@@ -4,9 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Relay.Models;
 using UnityEngine;
 
 namespace Magus.MatchmakingSystem
@@ -80,46 +82,47 @@ namespace Magus.MatchmakingSystem
             }
         }
 
-        private async void PollLobbyUpdate()
-        {
-            if(_lobby != null)
-            {
-                if(lobbyUpdateTimer > 0)
-                {
-                    lobbyUpdateTimer -= Time.deltaTime;
-                }
-                else
-                {
-                    lobbyUpdateTimer = Constants.LOBBY_UPDATE_RATE;
+        //private async void PollLobbyUpdate()
+        //{
+        //    if(_lobby != null)
+        //    {
+        //        if(lobbyUpdateTimer > 0)
+        //        {
+        //            lobbyUpdateTimer -= Time.deltaTime;
+        //        }
+        //        else
+        //        {
+        //            lobbyUpdateTimer = Constants.LOBBY_UPDATE_RATE;
 
-                    Lobby updatedLobby = await LobbyService.Instance.GetLobbyAsync(_lobby.Id);
-                    _lobby = updatedLobby;
+        //            Lobby updatedLobby = await LobbyService.Instance.GetLobbyAsync(_lobby.Id);
+        //            _lobby = updatedLobby;
 
-                    OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = updatedLobby });
+        //            OnLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = updatedLobby });
 
-                    if (!IsPlayerInLobby())
-                    {
-                        OnLobbyKicked?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
-                        _lobby = null;
-                        return;
-                    }
+        //            if (!IsPlayerInLobby())
+        //            {
+        //                OnLobbyKicked?.Invoke(this, new LobbyEventArgs { lobby = _lobby });
+        //                _lobby = null;
+        //                return;
+        //            }
 
-                    if (!_isHost && _lobby.Data["RelayCode"].Value != "0")
-                    {
-                        Player player = _lobby.Players.Find(x => x.Id == _playerId);
-                        if(player != null)
-                        {
-                            if (!bool.Parse(player.Data["InGame"].Value))
-                            {
-                                await RelayManager.instance.JoinRelay(_lobby.Data["RelayCode"].Value);
-                                OnGameStarted?.Invoke(this, EventArgs.Empty);
-                            }
-                        }
+        //            if (!_isHost && _lobby.Data["RelayCode"].Value != "0")
+        //            {
+        //                print("relaycode" + _lobby.Data["RelayCode"].Value);
+        //                Player player = _lobby.Players.Find(x => x.Id == _playerId);
+        //                if(player != null)
+        //                {
+        //                    if (!bool.Parse(player.Data["InGame"].Value))
+        //                    {
+        //                        await RelayManager.instance.JoinRelay(_lobby.Data["RelayCode"].Value);
+        //                        OnGameStarted?.Invoke(this, EventArgs.Empty);
+        //                    }
+        //                }
                         
-                    }
-                }
-            }
-        }
+        //            }
+        //        }
+        //    }
+        //}
 
         public async Task<LobbyServiceException> CreateLobbyInstance(string lobbyName, bool isPrivate)
         {
@@ -250,6 +253,7 @@ namespace Magus.MatchmakingSystem
 
                 if (!_isHost && _lobby.Data["RelayCode"].Value != "0")
                 {
+                    print("relaycode" + _lobby.Data["RelayCode"].Value);
                     Player player = _lobby.Players.Find(x => x.Id == _playerId);
                     if (player != null)
                     {
@@ -439,6 +443,30 @@ namespace Magus.MatchmakingSystem
             }
         }
 
+        public async void ResetPlayerData()
+        {
+            try
+            {
+
+                UpdatePlayerOptions playerOptions = new UpdatePlayerOptions
+                {
+                    AllocationId = default,
+                    Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        { "InGame", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, false.ToString()) },
+                        { "ReadyCheck", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, false.ToString()) }
+
+                    }
+                };
+                Lobby newLobby = await LobbyService.Instance.UpdatePlayerAsync(_lobby.Id, _playerId, playerOptions);
+            }
+            catch (LobbyServiceException)
+            {
+
+                
+            }
+        }
+
         public async void SetAllocationId(string allocationId)
         {
             try
@@ -496,6 +524,10 @@ namespace Magus.MatchmakingSystem
                     Lobby updatedLobby = await LobbyService.Instance.UpdateLobbyAsync(_lobby.Id, new UpdateLobbyOptions
                     {
                         HostId = playerId,
+                        Data = new Dictionary<string, DataObject>
+                        {
+                            { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, bool.Parse(_lobby.Data["InGame"].Value) ? _lobby.Data["RelayCode"].Value : "0") }
+                        }
                     });
                     _lobby = updatedLobby;
                     _isHost = false;
@@ -511,8 +543,7 @@ namespace Magus.MatchmakingSystem
         {
             try
             {
-                Lobby updatedLobby = await LobbyService.Instance.GetLobbyAsync(_lobby.Id);
-                _lobby = updatedLobby;
+                await ResetRelayCode();
                 if (_playerId == _lobby.HostId)
                 {
                     _isHost = true;
@@ -524,6 +555,26 @@ namespace Magus.MatchmakingSystem
 
             }
             
+        }
+
+        private async Task ResetRelayCode()
+        {
+            try
+            {
+                Lobby updatedLobby = await LobbyService.Instance.UpdateLobbyAsync(_lobby.Id, new UpdateLobbyOptions
+                {
+                    Data = new Dictionary<string, DataObject>
+                    {
+                        { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                    }
+                });
+                _lobby = updatedLobby;
+                
+            }
+            catch (LobbyServiceException)
+            {
+
+            }
         }
 
         public async Task StartGame()

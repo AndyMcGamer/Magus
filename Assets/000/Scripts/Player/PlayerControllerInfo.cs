@@ -68,6 +68,22 @@ namespace Magus.PlayerController
         {
             base.OnStartServer();
             GlobalPlayerController.instance.OnPlayerDeath += PlayerDeath;
+            base.ServerManager.Objects.OnPreDestroyClientObjects += OnPreDestroyClientObjects;
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            print("Stop Server PlayerInfo");
+            if (ServerManager != null)
+                ServerManager.Objects.OnPreDestroyClientObjects -= OnPreDestroyClientObjects;
+        }
+
+        [Server]
+        private void OnPreDestroyClientObjects(NetworkConnection conn)
+        {
+            if (conn == base.Owner)
+                RemoveOwnership();
         }
 
         public override void OnStartClient()

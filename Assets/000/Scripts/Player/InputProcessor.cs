@@ -1,4 +1,5 @@
 using FishNet.Object;
+using Magus.Global;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Magus.PlayerController
         private PlayerInput playerInput;
 
         private string currentControlScheme;
+        private string chosenActionMap;
 
         public event Action OnLoadedProcessor;
 
@@ -33,6 +35,8 @@ namespace Magus.PlayerController
             {
                 playerInput.enabled = true;
                 currentControlScheme = playerInput.currentControlScheme;
+                chosenActionMap = playerInput.currentActionMap.name;
+                playerInput.SwitchCurrentActionMap(chosenActionMap);
                 OnLoadedProcessor?.Invoke();
             }
         }
@@ -90,6 +94,26 @@ namespace Magus.PlayerController
 #endif
 
             playerInfo.playerCamControl.OnZoom(scrollValue);
+        }
+
+        public void OnOpenPause(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.playerHUD.TogglePauseScreen();
+            }
+        }
+
+        public void TogglePlayerInput(bool enable)
+        {
+            if(enable)
+            {
+                playerInput.SwitchCurrentActionMap(chosenActionMap);
+            }
+            else
+            {
+                playerInput.SwitchCurrentActionMap(Constants.MENU_ACTION_MAP);
+            }
         }
 
         public void OnSkill_1(InputAction.CallbackContext value)

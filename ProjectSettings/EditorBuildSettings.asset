@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Splash+CreditScreens/Splash+CreditScreens/Scenes/Dark_SplashScreens.unity
+    guid: 643282b8bc06341e6a94e7e190ebe23a
+  - enabled: 1
     path: Assets/000/Scenes/MainMenu.unity
     guid: 2ce2b5c652e9fd94eaa83b3363edfffc
   - enabled: 1
@@ -26,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/000/Scenes/EndScene.unity
     guid: e545c6018e0fc3b49a7b203c5c18a5dc
+  - enabled: 1
+    path: Assets/Splash+CreditScreens/Splash+CreditScreens/Scenes/Credits.unity
+    guid: a7d151ccb93da41a5a2b20b19e2771ab
   m_configObjects: {}

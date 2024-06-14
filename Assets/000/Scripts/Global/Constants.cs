@@ -62,6 +62,7 @@ namespace Magus.Global
 
         public const string CLASSIC_ACTION_MAP = "Classic";
         public const string MODERN_ACTION_MAP = "Modern";
+        public const string MENU_ACTION_MAP = "UI";
 
         public const float ENDING_COUNTDOWN = 60;
 

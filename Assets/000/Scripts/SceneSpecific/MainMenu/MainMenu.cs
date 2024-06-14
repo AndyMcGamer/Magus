@@ -72,9 +72,15 @@ namespace Magus.SceneSpecific
             await Fader.instance.FadeOut(0.55f, DG.Tweening.Ease.InOutSine, false);
         }
 
-        public void GoToScene(string sceneName)
+        private void GoToScene(string sceneName)
         {
             SceneSwitcher.instance.LoadScene(sceneName);
+        }
+
+        public async void GotoCredits()
+        {
+            await Fader.instance.FadeIn(0.5f, DG.Tweening.Ease.OutSine);
+            SceneSwitcher.instance.LoadScene("Credits");
         }
 
         public void StartEditUsername()

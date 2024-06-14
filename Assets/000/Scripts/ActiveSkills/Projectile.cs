@@ -45,6 +45,15 @@ namespace Magus.Skills.ActiveSkills
             this.damage = skillData.damage[skillLevel];
         }
 
+        private void Update()
+        {
+            lifetime -= Time.deltaTime;
+            if (lifetime < 0f)
+            {
+                Destroy(gameObject);
+            }
+        }
+
         private void FixedUpdate()
         {
             Move();
@@ -70,11 +79,6 @@ namespace Magus.Skills.ActiveSkills
             }
 
             rb.MovePosition(rb.position + transform.forward * (moveRate * (delta + passedTimeDelta)));
-            lifetime -= delta;
-            if (lifetime < 0f)
-            {
-                Destroy(gameObject);
-            }
         }
 
         private void OnTriggerEnter(Collider other)

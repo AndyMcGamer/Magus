@@ -1,0 +1,1 @@
+Splash Screen Documentation at: https://docs.google.com/document/d/18HG1OSwhIxEYbPDT7ltYJOTvT2NCFzKdaCquqm7V0FM/edit?usp=sharing

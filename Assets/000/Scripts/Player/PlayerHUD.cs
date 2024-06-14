@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Magus.Game;
 using Magus.Multiplayer;
 using Magus.Skills;
@@ -12,6 +13,7 @@ namespace Magus.PlayerController
     {
         [Header("References")]
         [SerializeField] private SkillInfoDisplay skillInfoDisplay;
+        [SerializeField] private PauseScreenManager pauseManager;
         [SerializeField] private GameObject hud;
         [SerializeField] private GameObject skillScreen;
         [SerializeField] private GameObject statScreen;
@@ -21,13 +23,16 @@ namespace Magus.PlayerController
 
         private bool showingSkillScreen;
         private bool showingStatScreen;
+        
 
         private void Awake()
         {
             skillScreen.SetActive(false);
             statScreen.SetActive(false);
+            
             showingSkillScreen = false;
             showingStatScreen = false;
+            
             hud.SetActive(false);
         }
 
@@ -66,6 +71,11 @@ namespace Magus.PlayerController
         {
             showingStatScreen= !showingStatScreen;
             statScreen.SetActive(showingStatScreen);
+        }
+
+        public void TogglePauseScreen()
+        {
+            pauseManager.OnEscapeKey(playerInfo);
         }
 
         public void StartDisplaySkill(GameObject skillIconObject, SkillUI skillUI, int skillLevel, SkillInfoDisplay.SkillDisplayMode mode)
