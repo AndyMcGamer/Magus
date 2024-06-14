@@ -53,7 +53,7 @@ namespace Magus.Skills
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if ((skillUI.SkillLevel <= 1 && !addButton) || skillUI.SkillLevel >= 9 && addButton) return;
+            if ((skillUI.SkillLevel <= 1 && !addButton) || (skillUI.SkillLevel >= skillUI.skillNode.skillData.MaxLevel && addButton)) return;
             skillUI.PlayerInfo.playerHUD.StartDisplaySkill(gameObject, skillUI, skillUI.SkillLevel + (addButton ? 1 : -1), SkillInfoDisplay.SkillDisplayMode.SkillButton);
         }
 

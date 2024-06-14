@@ -48,6 +48,9 @@ namespace Magus.SceneSpecific
         [Foldout("StartButtonColors"), SerializeField] private Color disabledColor;
         [Foldout("StartButtonColors"), SerializeField] private Color enabledColor;
 
+        [Foldout("UsernameColors"), SerializeField] private Color localPlayerColor;
+        [Foldout("UsernameColors"), SerializeField] private Color remotePlayerColor;
+
         private void OnEnable()
         {
             LobbyManager.instance.OnLobbyUpdate += LobbyUpdate;
@@ -150,13 +153,13 @@ namespace Magus.SceneSpecific
 
                 if (LobbyManager.instance.LocalPlayer.Data["PlayerNumber"].Value == "1")
                 {
-                    usernameText1.color = Color.green;
-                    usernameText2.color = Color.red;
+                    usernameText1.color = localPlayerColor;
+                    usernameText2.color = remotePlayerColor;
                 }
                 else if(LobbyManager.instance.LocalPlayer.Data["PlayerNumber"].Value == "2")
                 {
-                    usernameText1.color = Color.red;
-                    usernameText2.color = Color.green;
+                    usernameText1.color = remotePlayerColor;
+                    usernameText2.color = localPlayerColor;
                 }
 
             }
@@ -191,7 +194,7 @@ namespace Magus.SceneSpecific
 
         private async void GotoMain()
         {
-            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InSine);
+            await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.OutSine);
             SceneSwitcher.instance.LoadScene("MainMenu");
         }
 

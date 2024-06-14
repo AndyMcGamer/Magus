@@ -28,6 +28,7 @@ namespace Magus.Game
         public float GetCurrentHealth(int playerNumber) => playerNumber == 1 ? health_PlayerOne.Value : health_PlayerTwo.Value;
 
         public event Action<int> OnPlayerDeath;
+
         public event Action<int, float> OnPlayerHealthChange;
 
         private readonly SyncDictionary<string, int> skillStatus_PlayerOne = new(new SyncTypeSettings(0f));

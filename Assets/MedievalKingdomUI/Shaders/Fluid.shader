@@ -21,17 +21,37 @@
 		_AlphaColor ("Unfilled Part", Color) = (0, 0, 0, 0)
 		_FillLevel ("Fill Level", Range(0, 1)) = 1
 		_FadeAreaHeight ("Fade Area Height", Range(0, 0.2)) = 0.05
+
+		_StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+
+        _ColorMask ("Color Mask", Float) = 15
 		
+		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
 	}
 	SubShader
 	{
 		Tags {"Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True"}
 		LOD 100
 
+		Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
 
         ZWrite Off
         Cull Back
+		Lighting Off
         Blend SrcAlpha OneMinusSrcAlpha
+		ZTest [unity_GUIZTestMode]
+		ColorMask [_ColorMask]
 
 		Pass
 		{

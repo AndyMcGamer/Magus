@@ -39,7 +39,7 @@ namespace Magus.Global
         /// </summary>
         public const int MAX_ROUNDS = 5;
 
-        public const float TRAINING_TIME = 30; // should be 90
+        public const float TRAINING_TIME = 90; // should be 90
         public const float BATTLE_TIME = 300; // should be 300
         public const float TRANSITION_TIME = 5;
         public const float MAX_TIME = 5999;

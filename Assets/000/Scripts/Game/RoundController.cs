@@ -3,6 +3,7 @@ using FishNet.Object.Synchronizing;
 using Magus.Global;
 using Magus.SceneManagement;
 using Magus.UserInterface;
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,6 +36,9 @@ namespace Magus.Game
 
         private WaitForSeconds pointSevenFive = new(0.75f);
 
+        [ReadOnly] public int readyPlayers;
+        public event Action<int> OnReadyPlayersChanged;
+
         private void Awake()
         {
             if(instance != null)
@@ -51,8 +55,6 @@ namespace Magus.Game
         {
             stageTimer.OnChange -= StageTimer_OnChange;
         }
-
-        
 
         private void StageTimer_OnChange(float prev, float next, bool asServer)
         {
@@ -84,6 +86,24 @@ namespace Magus.Game
             }
         }
 
+        [ServerRpc(RequireOwnership = false)]
+        public void AddReadyPlayer()
+        {
+            readyPlayers++;
+            SetReadyPlayers(readyPlayers);
+            if(readyPlayers == MatchController.instance.MinPlayers)
+            {
+                JumpToBattlePrep();
+            }
+        }
+
+        [ObserversRpc(ExcludeServer = false)]
+        private void SetReadyPlayers(int players)
+        {
+            readyPlayers = players;
+            OnReadyPlayersChanged?.Invoke(players);
+        }
+
         private void SwitchToTransition()
         {
             changeStageTimer = true;
@@ -107,8 +127,8 @@ namespace Magus.Game
             gameStage = GameStage.Battle;
             SetGameStage(gameStage);
 
-            SceneSwitcher.instance.LoadGlobalNetworkedScene("HealthBars", false, FishNet.Managing.Scened.ReplaceOption.All);
-            SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, FishNet.Managing.Scened.ReplaceOption.None);
+            //SceneSwitcher.instance.LoadGlobalNetworkedScene("HealthBars", false, FishNet.Managing.Scened.ReplaceOption.All);
+            SceneSwitcher.instance.LoadGlobalNetworkedScene("RoundTimer", false, FishNet.Managing.Scened.ReplaceOption.All);
             SceneSwitcher.instance.LoadGlobalNetworkedScene("BattleScene", true, FishNet.Managing.Scened.ReplaceOption.None);
         }
 
@@ -161,6 +181,13 @@ namespace Magus.Game
         private void SetStageTimer(float time)
         {
             stageTimer.Value = time;
+        }
+
+        [Server]
+        public void JumpToBattlePrep()
+        {
+            if (gameStage != GameStage.Training) return;
+            stageTimer.Value = 0.1f;
         }
 
         [Server]

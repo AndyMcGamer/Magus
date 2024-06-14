@@ -21,9 +21,6 @@ EditorBuildSettings:
     path: Assets/000/Scenes/RoundTimer.unity
     guid: c4835504dcf0f3b469dab79a51a541e7
   - enabled: 1
-    path: Assets/000/Scenes/HealthBars.unity
-    guid: 321294bad87befb4e99df5a3a55b8c33
-  - enabled: 1
     path: Assets/000/Scenes/BattleScene.unity
     guid: 2d5e030fd614f094aa41934a8487727d
   - enabled: 1

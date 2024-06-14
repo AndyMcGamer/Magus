@@ -21,7 +21,7 @@ namespace Magus.PlayerController
         public PlayerRotation playerRotation;
         public PlayerMovement movement;
         public PlayerHUD playerHUD;
-        public PlayerHotbar playerHotbar;
+        public PlayerResourceDisplay playerHotbar;
         public PlayerSkillManager skillManager;
         public PlayerAttack playerAttack;
         public PlayerDash playerDash;

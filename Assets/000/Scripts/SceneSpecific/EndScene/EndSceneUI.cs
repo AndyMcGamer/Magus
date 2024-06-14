@@ -14,7 +14,6 @@ namespace Magus.SceneSpecific
     {
         [SerializeField] private GameEnd gameEnd;
 
-        [SerializeField] private TextMeshProUGUI winnerName;
         [SerializeField] private TextMeshProUGUI outcomeText;
         [SerializeField] private Button quitButton;
 
@@ -60,8 +59,6 @@ namespace Magus.SceneSpecific
                 image.color = Color.white;
             }
             text.color = Color.white;
-            string winner = ConnectionManager.instance.playerNames[winnerNumber];
-            winnerName.text = winner;
             if(playerNumber == winnerNumber) 
             {
                 outcomeText.text = "You Won";

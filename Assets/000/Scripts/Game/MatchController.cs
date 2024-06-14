@@ -25,6 +25,7 @@ namespace Magus.Game
         public GameMode gameMode;
 
         private int minPlayers;
+        public int MinPlayers => minPlayers;
         private int neededTrainingRooms;
 
         public int wins_PlayerOne;
@@ -100,6 +101,7 @@ namespace Magus.Game
             gameMode = mode;
             SetGameMode(mode);
             this.minPlayers = minPlayers;
+            SetMinPlayers(minPlayers);
             roundNumber = 1;
             RoundController.instance.StartRound();
             SetRoundNumber(roundNumber);
@@ -115,6 +117,12 @@ namespace Magus.Game
                     GlobalPlayerController.instance.SetSkillPoints(2, 5);
                     break;
             }
+        }
+
+        [ObserversRpc(ExcludeServer = false)]
+        private void SetMinPlayers(int players)
+        {
+            minPlayers = players;
         }
 
         [Server]
