@@ -31,9 +31,9 @@ namespace Magus.SceneSpecific
             base.OnStartClient();
             SpawnPlayer(base.LocalConnection);
             Banner.instance.SetText("Fight");
-            await Banner.instance.FadeIn(0.01f, reset: false);
+            await Banner.instance.FadeIn(0.1f, reset: true);
             await Fader.instance.FadeOut(0.75f, easeFunction: Ease.OutSine);
-            await Banner.instance.FadeOut(1f, Ease.InQuart);
+            await Banner.instance.FadeOut(1f, Ease.InQuart, reset: false);
             CheckPlayers();
         }
 

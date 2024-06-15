@@ -97,6 +97,7 @@ namespace Magus.Game
 
         public void StartMatch(GameMode mode, int minPlayers)
         {
+            Client_StartMatch();
             matchStarted = true;
             gameMode = mode;
             SetGameMode(mode);
@@ -119,6 +120,13 @@ namespace Magus.Game
             }
         }
 
+        [ObserversRpc]
+        private void Client_StartMatch()
+        {
+            AudioManager.instance.StopAllAudio();
+            AudioManager.instance.Play("Battle");
+        }
+
         [ObserversRpc(ExcludeServer = false)]
         private void SetMinPlayers(int players)
         {
@@ -128,8 +136,7 @@ namespace Magus.Game
         [Server]
         public void EndRound(int winningPlayer)
         {
-            IncrementPlayerWins(winningPlayer);
-
+            print(winningPlayer);
             // if number of wins met, end game
             if(wins_PlayerOne == Constants.NUM_WINS_NEEDED || wins_PlayerTwo == Constants.NUM_WINS_NEEDED)
             {
@@ -144,6 +151,8 @@ namespace Magus.Game
                 SetRoundNumber(roundNumber);
                 GlobalPlayerController.instance.ChangeSkillPoints(1, 3);
                 GlobalPlayerController.instance.ChangeSkillPoints(2, 3);
+
+                GlobalPlayerController.instance.ChangeSkillPoints(winningPlayer, 1);
             }
 
             GlobalPlayerController.instance.ClearTrainingRooms();
@@ -166,15 +175,23 @@ namespace Magus.Game
             SetPlayerWins(2, wins_PlayerTwo);
         }
 
+        [Server]
+        public void ChooseWinner(int winnerNum)
+        {
+            IncrementPlayerWins(winnerNum);
+        }
+
         private void IncrementPlayerWins(int playerNumber)
         {
             if(playerNumber == 1)
             {
                 wins_PlayerOne++;
+                SetPlayerWins(1, wins_PlayerOne);
             }
             else if(playerNumber == 2)
             {
                 wins_PlayerTwo++;
+                SetPlayerWins(2, wins_PlayerTwo);
             }
         }
 

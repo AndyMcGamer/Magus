@@ -49,6 +49,7 @@ namespace Magus.PlayerController
             GlobalPlayerController.instance.OnSkillUpdate += SkillUpdated;
             GlobalPlayerController.instance.OnSkillAdded += OnSkillAdded;
             GlobalPlayerController.instance.OnSkillRemoved += OnSkillRemoved;
+            GlobalPlayerController.instance.OnResetSkills += OnResetSkills;
         }
 
         private void OnDestroy()
@@ -56,6 +57,7 @@ namespace Magus.PlayerController
             GlobalPlayerController.instance.OnSkillUpdate -= SkillUpdated;
             GlobalPlayerController.instance.OnSkillAdded -= OnSkillAdded;
             GlobalPlayerController.instance.OnSkillRemoved -= OnSkillRemoved;
+            GlobalPlayerController.instance.OnResetSkills -= OnResetSkills;
         }
 
         private void Update()
@@ -86,6 +88,11 @@ namespace Magus.PlayerController
                 playerInfo.stateManager.ExitState(PlayerState.Casting);
                 castTimer = CAST_TIMER_EXPIRED;
             }
+        }
+
+        private void OnResetSkills()
+        {
+            RebuildSkillLists();
         }
 
         private void SkillUpdated(int playerNumber, string skillName)
@@ -183,6 +190,19 @@ namespace Magus.PlayerController
                 default:
                     break;
             }
+        }
+
+        // THIS IS TEMPORARY REPEAT TEMPROARRY 
+        [ServerRpc]
+        private void CastDashSound()
+        {
+            ObserverDashSound();
+        }
+
+        [ObserversRpc]
+        private void ObserverDashSound()
+        {
+            AudioManager.instance.Play("Dash");
         }
 
         public ActiveSkill GetActiveSkill(string skillName)

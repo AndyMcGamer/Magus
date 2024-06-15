@@ -3,6 +3,7 @@ using FishNet.Connection;
 using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FishNet.Transporting.Multipass;
 using Magus.Global;
 using Magus.Multiplayer;
 using System;
@@ -19,7 +20,7 @@ namespace Magus.SceneSpecific
         public float CountdownTimer => countdownTimer.Value;
 
         public event Action<float> OnCountdownChanged;
-        public event Action<int, int> OnLoadWinner;
+        public event Action<int> OnWinnerLoaded;
 
         private bool stoppedConnection;
 
@@ -36,7 +37,6 @@ namespace Magus.SceneSpecific
             countdownTimer.OnChange -= CountdownChanged;
             if(base.IsServerInitialized) {
                 base.SceneManager.OnLoadEnd -= OnLoadEnd;
-                base.SceneManager.OnClientPresenceChangeEnd -= SceneManager_OnClientPresenceChangeEnd;
             }
         }
 
@@ -46,15 +46,6 @@ namespace Magus.SceneSpecific
             stoppedConnection = false;
             countdownTimer.Value = Constants.ENDING_COUNTDOWN;
             base.SceneManager.OnLoadEnd += OnLoadEnd;
-            base.SceneManager.OnClientPresenceChangeEnd += SceneManager_OnClientPresenceChangeEnd;
-        }
-
-        private void SceneManager_OnClientPresenceChangeEnd(ClientPresenceChangeEventArgs args)
-        {
-            if(args.Scene.name == "EndScene" && args.Added)
-            {
-                SetWinner(args.Connection, winner);
-            }
         }
 
         private void OnLoadEnd(SceneLoadEndEventArgs args)
@@ -62,13 +53,14 @@ namespace Magus.SceneSpecific
             if (!args.QueueData.AsServer) return;
             int[] serverParams = args.QueueData.SceneLoadData.Params.ServerParams.Cast<int>().ToArray();
             winner = serverParams[0];
+            SetWinner(winner);
         }
 
-        [TargetRpc]
-        private void SetWinner(NetworkConnection conn, int winner)
+        [ObserversRpc]
+        private void SetWinner(int winner)
         {
             this.winner = winner;
-            OnLoadWinner?.Invoke(ConnectionManager.instance.playerData[conn], winner);
+            OnWinnerLoaded?.Invoke(winner);
         }
 
         private void CountdownChanged(float prev, float next, bool asServer)
@@ -81,8 +73,8 @@ namespace Magus.SceneSpecific
             {
                 if(next <= 0 && !stoppedConnection)
                 {
-                    //base.ServerManager.StopConnection(true);
                     stoppedConnection = true;
+                    ConnectionManager.instance.ForceDisconnectServer(base.TransportManager.GetTransport<Multipass>().ClientTransport.Index, immediate: true);
                 }
             }
         }

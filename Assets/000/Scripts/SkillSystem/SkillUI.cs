@@ -57,12 +57,14 @@ namespace Magus.Skills
             playerInfo.skillManager.OnSkillUpdate += SkillManager_OnSkillUpdate;
             playerInfo.skillManager.PropogateSkillUpdate(skillNode.skillData.Name);
             GlobalPlayerController.instance.OnSkillPointsChanged += OnSkillPointsChanged;
+            GlobalPlayerController.instance.OnLockSkills += OnLockSkills;
         }
 
         private void OnDisable()
         {
             playerInfo.skillManager.OnSkillUpdate -= SkillManager_OnSkillUpdate;
             GlobalPlayerController.instance.OnSkillPointsChanged -= OnSkillPointsChanged;
+            GlobalPlayerController.instance.OnLockSkills -= OnLockSkills;
         }
 
         private void OnSkillPointsChanged(int playerNumber, int prev, int next)
@@ -70,6 +72,11 @@ namespace Magus.Skills
             if (playerNumber != ConnectionManager.instance.playerData[playerInfo.LocalConnection]) return;
             if (prev != 0 && next != 0) return;
             UpdateSkillUI(playerNumber, skillNode.skillData.Name, false);
+        }
+
+        private void OnLockSkills()
+        {
+            UpdateSkillUI(ConnectionManager.instance.playerData[playerInfo.LocalConnection], skillNode.skillData.Name, false);
         }
 
         private void SkillManager_OnSkillUpdate(int playerNumber, string skillName)

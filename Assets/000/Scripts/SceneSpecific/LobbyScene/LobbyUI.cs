@@ -20,14 +20,14 @@ namespace Magus.SceneSpecific
         [SerializeField] private GameObject playerData1;
         [SerializeField] private TextMeshProUGUI usernameText1;
         [SerializeField] private GameObject hostIcon1;
-        [SerializeField] private GameObject kickIcon1;
+        [SerializeField] private Button kickIcon1;
         [SerializeField] private GameObject readyIcon1;
 
         [Header("Player Two")]
         [SerializeField] private GameObject playerData2;
         [SerializeField] private TextMeshProUGUI usernameText2;
         [SerializeField] private GameObject hostIcon2;
-        [SerializeField] private GameObject kickIcon2;
+        [SerializeField] private Button kickIcon2;
         [SerializeField] private GameObject readyIcon2;
 
         [Header("Host Controls")]
@@ -101,8 +101,8 @@ namespace Magus.SceneSpecific
             lobbyNameText.text = LobbyManager.instance.Lobby.Name;
             joinCodeText.text = $"{LobbyManager.instance.LobbyCode}";
 
-            kickIcon1.SetActive(false);
-            kickIcon2.SetActive(false);
+            kickIcon1.gameObject.SetActive(false);
+            kickIcon2.gameObject.SetActive(false);
 
             playerData1.SetActive(false);
             playerData2.SetActive(false);
@@ -117,12 +117,12 @@ namespace Magus.SceneSpecific
                     if (player.Id == LobbyManager.instance.Lobby.HostId)
                     {
                         hostIcon1.SetActive(true);
-                        kickIcon1.SetActive(false);
+                        kickIcon1.gameObject.SetActive(false);
                     }
                     else
                     {
                         hostIcon1.SetActive(false);
-                        if(LobbyManager.instance.IsHost) kickIcon1.SetActive(true);
+                        if(LobbyManager.instance.IsHost) kickIcon1.gameObject.SetActive(true);
                     }
                     
                     readyIcon1.SetActive(bool.Parse(player.Data["ReadyCheck"].Value));
@@ -135,12 +135,12 @@ namespace Magus.SceneSpecific
                     if (player.Id == LobbyManager.instance.Lobby.HostId)
                     {
                         hostIcon2.SetActive(true);
-                        kickIcon2.SetActive(false);
+                        kickIcon2.gameObject.SetActive(false);
                     }
                     else
                     {
                         hostIcon2.SetActive(false);
-                        if (LobbyManager.instance.IsHost) kickIcon2.SetActive(true);
+                        if (LobbyManager.instance.IsHost) kickIcon2.gameObject.SetActive(true);
                     }
 
                     readyIcon2.SetActive(bool.Parse(player.Data["ReadyCheck"].Value));
@@ -241,6 +241,13 @@ namespace Magus.SceneSpecific
 
             await Fader.instance.FadeIn(0.75f, DG.Tweening.Ease.InSine, false);
             await LobbyManager.instance.StartGame();
+        }
+
+        public async void KickPlayer()
+        {
+            int kickPlayer = LobbyManager.instance.LocalPlayer.Data["PlayerNumber"].Value == "1" ? 2 : 1;
+            var player = LobbyManager.instance.Lobby.Players.Find(x => x.Data["PlayerNumber"].Value == kickPlayer.ToString());
+            await LobbyManager.instance.KickPlayer(player.Id);
         }
 
         public async void LeaveLobby()

@@ -13,9 +13,12 @@ namespace Magus.Skills.ActiveSkills
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] private GameObject visual;
+        [SerializeField] private GameObject impact;
         [SerializeField] private Collider col;
 
         [SerializeField] private bool destroyImmediate = true;
+
+        [SerializeField] private float impactOffset = 1f;
 
 
         private float passedTime = 0f;
@@ -24,6 +27,13 @@ namespace Magus.Skills.ActiveSkills
 
         public string playerTag;
         public float damage;
+
+        private bool reduceLifetime;
+
+        private void Awake()
+        {
+            reduceLifetime = false;
+        }
 
         public void Initialize(ProjectileSkillData skillData, float passedTime, int playerNumber, bool showVisual = true)
         {
@@ -43,10 +53,13 @@ namespace Magus.Skills.ActiveSkills
             this.moveRate = skillData.moveRate[skillLevel];
             this.lifetime = skillData.lifetime[skillLevel];
             this.damage = skillData.damage[skillLevel];
+
+            reduceLifetime = true;
         }
 
         private void Update()
         {
+            if (!reduceLifetime) return;
             lifetime -= Time.deltaTime;
             if (lifetime < 0f)
             {
@@ -85,18 +98,23 @@ namespace Magus.Skills.ActiveSkills
         {
             if (!other.CompareTag(playerTag))
             {
-                if (InstanceFinder.IsServerStarted)
+                if (other.TryGetComponent<PlayerCollisionHandler>(out var collisionHandler))
                 {
-                    if (other.TryGetComponent<PlayerCollisionHandler>(out var collisionHandler))
+                    if (InstanceFinder.IsServerStarted)
                     {
                         NetworkConnection conn = other.GetComponent<PlayerCollisionHandler>().Owner;
                         GlobalPlayerController.instance.ChangePlayerHealth(conn, -damage);
                         col.enabled = false;
                     }
-                    
+
                 }
-                
-                if(destroyImmediate) Destroy(gameObject);
+                // TEMPORARY
+                Instantiate(impact, transform.position + transform.forward * impactOffset, Quaternion.identity);
+                if (destroyImmediate)
+                {
+                    reduceLifetime = false;
+                    Destroy(gameObject, 0.05f);
+                }
             }
         }
     }

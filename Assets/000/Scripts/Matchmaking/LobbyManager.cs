@@ -500,7 +500,7 @@ namespace Magus.MatchmakingSystem
             }
         }
 
-        public async void KickPlayer(string playerId)
+        public async Task KickPlayer(string playerId)
         {
             try
             {
@@ -557,7 +557,7 @@ namespace Magus.MatchmakingSystem
             
         }
 
-        private async Task ResetRelayCode()
+        public async Task ResetRelayCode()
         {
             try
             {

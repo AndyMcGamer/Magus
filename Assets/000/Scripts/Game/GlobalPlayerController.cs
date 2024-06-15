@@ -60,10 +60,16 @@ namespace Magus.Game
 
         public event Action<int, int, int> OnSkillPointsChanged;
 
+        public event Action OnLockSkills;
+
+        public event Action OnResetSkills;
+
         public Dictionary<int, Scene> trainingRooms;
 
         [ReadOnly] public string[] hotbarSkills;
         public event Action<int> OnHotbarUpdated;
+
+        public bool hasResetPoints;
 
         private void Awake()
         {
@@ -90,6 +96,8 @@ namespace Magus.Game
 
             skillPoints_PlayerOne.OnChange += SkillPoints_PlayerOne_OnChange;
             skillPoints_PlayerTwo.OnChange += SkillPoints_PlayerTwo_OnChange;
+
+            hasResetPoints = false;
         }
 
         private void OnDestroy()
@@ -193,11 +201,57 @@ namespace Magus.Game
         {
             int playerNumber = ConnectionManager.instance.playerData[base.LocalConnection];
             confirmedSkills = new(GetSkillStatus(playerNumber));
+            OnLockSkills?.Invoke();
         }
 
-        public void RefundSkills()
+        public bool RefundSkills()
         {
+            if (hasResetPoints || (confirmedSkills.Count == 0 && MatchController.instance.gameMode == GameMode.Standard)) return false;
             confirmedSkills = new();
+            hasResetPoints = true && MatchController.instance.gameMode == GameMode.Standard;
+            ClearSkills(ConnectionManager.instance.playerData[base.LocalConnection]);
+            hotbarSkills = new string[Constants.MAX_HOTBAR_SKILLS];
+            for (int i = 0; i < Constants.MAX_HOTBAR_SKILLS; i++)
+            {
+                OnHotbarUpdated?.Invoke(i);
+            }
+            OnResetSkills?.Invoke();
+            return true;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void ClearSkills(int playerNumber)
+        {
+            if(playerNumber == 1)
+            {
+                int pointSum = 0;
+                List<string> skills = new();
+                foreach (var skillStatus in skillStatus_PlayerOne)
+                {
+                    pointSum += skillStatus.Value;
+                    skills.Add(skillStatus.Key);
+                }
+                foreach (var skill in skills)
+                {
+                    skillStatus_PlayerOne.Remove(skill);
+                }
+                Server_ChangeSkillPoints(1, pointSum);
+            }
+            else if(playerNumber == 2)
+            {
+                int pointSum = 0;
+                List<string> skills = new();
+                foreach (var skillStatus in skillStatus_PlayerTwo)
+                {
+                    pointSum += skillStatus.Value;
+                    skills.Add(skillStatus.Key);
+                }
+                foreach (var skill in skills)
+                {
+                    skillStatus_PlayerTwo.Remove(skill);
+                }
+                Server_ChangeSkillPoints(2, pointSum);
+            }
         }
 
         public void UpdateHotbar(int hotbarIndex)
@@ -329,6 +383,18 @@ namespace Magus.Game
             else if(playerNumber == 2)
             {
                 skillPoints_PlayerTwo.Value = amount;
+            }
+        }
+
+        public void Server_ChangeSkillPoints(int playerNumber, int amount)
+        {
+            if (playerNumber == 1)
+            {
+                skillPoints_PlayerOne.Value += amount;
+            }
+            else if (playerNumber == 2)
+            {
+                skillPoints_PlayerTwo.Value += amount;
             }
         }
 

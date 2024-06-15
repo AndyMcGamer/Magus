@@ -23,6 +23,7 @@ namespace Magus.SaveSystem
     public class SaveData
     {
         public PlayerInfo playerInfo;
+        public bool shownControls;
 
         public SaveData()
         {

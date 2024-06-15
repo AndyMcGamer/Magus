@@ -1,4 +1,5 @@
 using DG.Tweening;
+using FishNet.Object;
 using Magus.Game;
 using Magus.Multiplayer;
 using Magus.Skills;
@@ -6,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Magus.PlayerController
 {
@@ -18,6 +20,9 @@ namespace Magus.PlayerController
         [SerializeField] private GameObject skillScreen;
         [SerializeField] private GameObject statScreen;
 
+        [Header("Reset Skills")]
+        [SerializeField] private CanvasGroup resetSkillGroup;
+        [SerializeField] private Button resetButton;
 
         [SerializeField] private TextMeshProUGUI skillPointDisplay;
 
@@ -91,6 +96,16 @@ namespace Magus.PlayerController
         public void StopDisplaySkill()
         {
             skillInfoDisplay.HideSkillInfo();
+        }
+
+        [Client]
+        public void ResetSkills()
+        {
+            if (GlobalPlayerController.instance.RefundSkills() && MatchController.instance.gameMode == GameMode.Standard)
+            {
+                resetButton.interactable = false;
+                resetSkillGroup.DOFade(0.75f, 0.3f);
+            }
         }
     }
 }

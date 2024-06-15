@@ -5,6 +5,7 @@ using FishNet.Object;
 using Magus.Game;
 using Magus.Global;
 using Magus.Multiplayer;
+using Magus.UserInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -128,8 +129,11 @@ namespace Magus.PlayerController
         private IEnumerator EndRound()
         {
             RoundController.instance.SetChangeTimer(false);
+            RoundController.instance.DetermineWinner();
+
             yield return fiveSeconds;
             RoundController.instance.EndRound();
+
         }
 
         [ObserversRpc]
@@ -141,13 +145,8 @@ namespace Magus.PlayerController
             {
                 return;
             }
+            
             stateManager.ChangeState(PlayerState.Dead);
-        }
-
-        [ServerRpc(RequireOwnership = false)]
-        private void DespawnPlayer(GameObject playerObject)
-        {
-            ServerManager.Despawn(playerObject);
         }
     }
 }

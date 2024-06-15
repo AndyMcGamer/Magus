@@ -10,55 +10,38 @@ using UnityEngine.UI;
 
 namespace Magus.SceneSpecific
 {
-    public class EndSceneUI : MonoBehaviour
+    public class EndSceneUI : NetworkBehaviour
     {
         [SerializeField] private GameEnd gameEnd;
 
         [SerializeField] private TextMeshProUGUI outcomeText;
-        [SerializeField] private Button quitButton;
 
         private bool quitting;
 
-        private void Awake()
+        public override void OnStartClient()
         {
-            quitButton.interactable = false;
-            var images = quitButton.GetComponentsInChildren<Image>();
-            var text = quitButton.GetComponentInChildren<TextMeshProUGUI>();
-            foreach (var image in images)
-            {
-                image.color = quitButton.colors.disabledColor;
-            }
-            text.color = quitButton.colors.disabledColor;
+            base.OnStartClient();
             Enter();
+            gameEnd.OnCountdownChanged += GameEnd_OnCountdownChanged;
+            gameEnd.OnWinnerLoaded += LoadWinner;
+        }
+
+        public override void OnStopClient()
+        {
+            base.OnStopClient();
+            gameEnd.OnCountdownChanged -= GameEnd_OnCountdownChanged;
+            gameEnd.OnWinnerLoaded -= LoadWinner;
         }
 
         private async void Enter()
         {
-            await Fader.instance.FadeOut(0.75f, DG.Tweening.Ease.InSine);
+            await Fader.instance.FadeOut(1.5f, DG.Tweening.Ease.InSine);
+            LoadWinner(gameEnd.winner);
         }
 
-        private void OnEnable()
+        private void LoadWinner(int winnerNumber)
         {
-            gameEnd.OnCountdownChanged += GameEnd_OnCountdownChanged;
-            gameEnd.OnLoadWinner += LoadWinner;
-        }
-
-        private void OnDisable()
-        {
-            gameEnd.OnCountdownChanged -= GameEnd_OnCountdownChanged;
-            gameEnd.OnLoadWinner -= LoadWinner;
-        }
-
-        private void LoadWinner(int playerNumber, int winnerNumber)
-        {
-            quitButton.interactable = true;
-            var images = quitButton.GetComponentsInChildren<Image>();
-            var text = quitButton.GetComponentInChildren<TextMeshProUGUI>();
-            foreach (var image in images)
-            {
-                image.color = Color.white;
-            }
-            text.color = Color.white;
+            int playerNumber = ConnectionManager.instance.playerData[base.LocalConnection];   
             if(playerNumber == winnerNumber) 
             {
                 outcomeText.text = "You Won";
@@ -81,14 +64,17 @@ namespace Magus.SceneSpecific
         public void QuitToLobby()
         {
             if (quitting) return;
-
-            print("Quit");
-
             quitting = true;
-            LobbyManager.instance.UpdateGameStatus(false);
 
-            // Temporary -- should actually return to lobby
-            Application.Quit();
+            ConnectionManager.instance.End_BackToLobby();
+        }
+
+        public void QuitToMenu()
+        {
+            if (quitting) return;
+            quitting = true;
+
+            ConnectionManager.instance.End_BackToMenu();
         }
     }
 }

@@ -1,10 +1,13 @@
+using DG.Tweening;
 using Magus.MatchmakingSystem;
+using Magus.SaveSystem;
 using Magus.SceneManagement;
 using Magus.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Magus.SceneSpecific
 {
@@ -15,7 +18,7 @@ namespace Magus.SceneSpecific
         public GameObject screen;
     }
 
-    public class MainMenu : MonoBehaviour
+    public class MainMenu : MonoBehaviour, IDataPersistence
     {
         [SerializeField] private MainMenuScreen[] mainMenuScreens;
 
@@ -31,9 +34,20 @@ namespace Magus.SceneSpecific
         [SerializeField] private TextMeshProUGUI usernameText;
         [SerializeField] private TMP_InputField editUsernameText;
 
+        [Header("Controls")]
+        [SerializeField] private Image controlsBackground;
+        [SerializeField] private Transform controlsPanel;
+        private bool showControls;
+
+        private bool shownControlsBefore;
+
         private void Awake()
         {
             GoToScreen("Title");
+            showControls = false;
+            controlsBackground.DOFade(0f, 0.01f);
+            controlsBackground.raycastTarget = false;
+            controlsPanel.localScale = Vector3.zero;
         }
 
         private void OnEnable()
@@ -46,6 +60,23 @@ namespace Magus.SceneSpecific
         {
             PlayerInfoManager.instance.OnUsernameUpdated -= UsernameChanged;
             LobbyManager.instance.OnJoinedLobby -= JoinLobby;
+        }
+
+        public void ToggleControls()
+        {
+            showControls = !showControls;
+            if (showControls)
+            {
+                controlsBackground.DOFade(1f, 0.35f).SetEase(Ease.OutSine);
+                controlsBackground.raycastTarget = true;
+                controlsPanel.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutSine);
+            }
+            else
+            {
+                controlsBackground.DOFade(0f, 0.35f).SetEase(Ease.OutSine);
+                controlsBackground.raycastTarget = false;
+                controlsPanel.DOScale(Vector3.zero, 0.35f).SetEase(Ease.OutSine);
+            }
         }
 
         private void JoinLobby(object sender, LobbyManager.LobbyEventArgs e)
@@ -117,6 +148,21 @@ namespace Magus.SceneSpecific
         public void QuitGame()
         {
             Application.Quit();
+        }
+
+        public void LoadData(SaveData data)
+        {
+            shownControlsBefore = data.shownControls;
+            if (!shownControlsBefore)
+            {
+                ToggleControls();
+                shownControlsBefore = true;
+            }
+        }
+
+        public void SaveData(ref SaveData data)
+        {
+            data.shownControls = shownControlsBefore;
         }
     }
 }

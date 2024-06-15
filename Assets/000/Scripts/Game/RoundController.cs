@@ -39,6 +39,8 @@ namespace Magus.Game
         [ReadOnly] public int readyPlayers;
         public event Action<int> OnReadyPlayersChanged;
 
+        public event Action<int> OnRoundWinner;
+
         private void Awake()
         {
             if(instance != null)
@@ -141,6 +143,10 @@ namespace Magus.Game
         private IEnumerator SwitchToTraining()
         {
             ClientFade();
+
+            readyPlayers = 0;
+            SetReadyPlayers(readyPlayers);
+
             yield return pointSevenFive;
 
             changeStageTimer = false;
@@ -161,6 +167,30 @@ namespace Magus.Game
             }
         }
 
+        [Server]
+        public void DetermineWinner()
+        {
+            float p1Health = GlobalPlayerController.instance.GetCurrentHealth(1);
+            float p2Health = GlobalPlayerController.instance.GetCurrentHealth(2);
+
+            if (p1Health > p2Health)
+            {
+                MatchController.instance.ChooseWinner(1);
+                BroadcastRoundWin(1);
+            }
+            else if (p1Health < p2Health)
+            {
+                MatchController.instance.ChooseWinner(2);
+                BroadcastRoundWin(2);
+            }
+        }
+
+        [ObserversRpc]
+        private void BroadcastRoundWin(int winner)
+        {
+            OnRoundWinner?.Invoke(winner);
+        }
+
         public void EndRound()
         {
             StartCoroutine(SwitchToTraining());
@@ -174,7 +204,7 @@ namespace Magus.Game
 
         private async void ClientFadeAsync()
         {
-            await Fader.instance.FadeIn(easeFunction: DG.Tweening.Ease.OutSine);
+            await Fader.instance.FadeIn(easeFunction: DG.Tweening.Ease.OutQuad);
         }
 
         [Server]

@@ -26,6 +26,9 @@ namespace Magus.PlayerController
         [SerializeField] private Image quitConfirmBackground;
         [SerializeField] private Transform quitConfirmPanel;
 
+        [SerializeField] private Image controlsBackground;
+        [SerializeField] private Transform controlsPanel;
+
         private bool showingPauseScreen;
 
         private void Awake()
@@ -39,6 +42,11 @@ namespace Magus.PlayerController
             quitConfirmBackground.DOFade(0f, 0.01f);
             quitConfirmBackground.raycastTarget = false;
             quitConfirmPanel.localScale = Vector3.zero;
+
+
+            controlsBackground.DOFade(0f, 0.01f);
+            controlsBackground.raycastTarget = false;
+            controlsPanel.localScale = Vector3.zero;
         }
 
         public void OnEscapeKey(PlayerControllerInfo playerInfo)
@@ -53,6 +61,7 @@ namespace Magus.PlayerController
                     pauseScreen.blocksRaycasts = showingPauseScreen;
                     break;
                 case PauseScreen.Settings:
+
                     break;
                 case PauseScreen.QuitConfirm:
                     HideQuitConfirm();
@@ -74,6 +83,22 @@ namespace Magus.PlayerController
             quitConfirmBackground.DOFade(0f, 0.35f).SetEase(Ease.OutSine);
             quitConfirmBackground.raycastTarget = false;
             quitConfirmPanel.DOScale(Vector3.zero, 0.35f).SetEase(Ease.OutSine);
+        }
+
+        public void ShowControls()
+        {
+            currentScreen = PauseScreen.Settings;
+            controlsBackground.DOFade(1f, 0.35f).SetEase(Ease.OutSine);
+            controlsBackground.raycastTarget = true;
+            controlsPanel.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutSine);
+        }
+
+        public void HideControls()
+        {
+            currentScreen = PauseScreen.Main;
+            controlsBackground.DOFade(0f, 0.35f).SetEase(Ease.OutSine);
+            controlsBackground.raycastTarget = false;
+            controlsPanel.DOScale(Vector3.zero, 0.35f).SetEase(Ease.OutSine);
         }
 
         public void QuitToMenu()

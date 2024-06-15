@@ -2,6 +2,7 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting.Multipass;
+using Magus.Game;
 using Magus.MatchmakingSystem;
 using Magus.SceneManagement;
 using Magus.UserInterface;
@@ -84,15 +85,72 @@ namespace Magus.Multiplayer
             };
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void ForceDisconnectServer(int transportIndex, NetworkConnection excludeConnection)
+        [Client]
+        public void End_BackToLobby()
         {
-            StartCoroutine(ForceDisconnectCoroutine(transportIndex, excludeConnection));
+            Async_BackToLobby();
         }
 
-        private IEnumerator ForceDisconnectCoroutine(int transportIndex, NetworkConnection excludeConnection)
+        private async void Async_BackToLobby()
         {
-            yield return new WaitForSeconds(1.5f);
+            AudioManager.instance.StopAllAudio();
+            AudioManager.instance.Play("Theme");
+            await Fader.instance.FadeIn(0.65f, DG.Tweening.Ease.OutQuad);
+
+            if (LobbyManager.instance.IsHost)
+            {
+                await LobbyManager.instance.ResetRelayCode();
+            }
+            
+            await Task.Delay(1000);
+            
+            var mp = base.TransportManager.GetTransport<Multipass>();
+
+            mp.ClientTransport.StopConnection(false);
+
+            if (LobbyManager.instance.Lobby != null)
+            {
+                LobbyManager.instance.ResetPlayerData();
+                SceneSwitcher.instance.LoadScene("LobbyScene");
+            }
+            else
+            {
+                SceneSwitcher.instance.LoadScene("MainMenu");
+            }
+        }
+
+        [Client]
+        public void End_BackToMenu()
+        {
+            Async_BackToMenu();
+        }
+
+        private async void Async_BackToMenu()
+        {
+            AudioManager.instance.StopAllAudio();
+            AudioManager.instance.Play("Theme");
+            await Fader.instance.FadeIn(0.65f, DG.Tweening.Ease.OutQuad);
+
+            var mp = base.TransportManager.GetTransport<Multipass>();
+
+            mp.ClientTransport.StopConnection(false);
+
+            if (LobbyManager.instance.Lobby != null)
+            {
+                await LobbyManager.instance.LeaveLobby();
+            }
+            SceneSwitcher.instance.LoadScene("MainMenu");
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void ForceDisconnectServer(int transportIndex, NetworkConnection excludeConnection = null, bool immediate = false)
+        {
+            StartCoroutine(ForceDisconnectCoroutine(transportIndex, excludeConnection, immediate));
+        }
+
+        private IEnumerator ForceDisconnectCoroutine(int transportIndex, NetworkConnection excludeConnection, bool immediate)
+        {
+            if (!immediate) yield return new WaitForSeconds(1.5f);
 
             foreach (var conn in base.ServerManager.Clients.Values)
             {
@@ -139,6 +197,8 @@ namespace Magus.Multiplayer
 
         private async void HandleForcedDisconnect(bool fromServer)
         {
+            AudioManager.instance.StopAllAudio();
+            AudioManager.instance.Play("Theme");
             if (fromServer)
             {
                 if(LobbyManager.instance.Lobby != null)
