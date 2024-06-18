@@ -5968,6 +5968,55 @@ Transform:
   - {fileID: 6533762638758295718}
   m_Father: {fileID: 421561610059244593}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4086451604484914388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5361560225567041612}
+  - component: {fileID: 6456880754803795565}
+  m_Layer: 0
+  m_Name: PostProcess
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5361560225567041612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4086451604484914388}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2820871245219742560}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6456880754803795565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4086451604484914388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: bcad73b8b86d1ed4c94fef327273b999, type: 2}
 --- !u!1 &4092553498225968644
 GameObject:
   m_ObjectHideFlags: 0
@@ -10287,6 +10336,7 @@ Transform:
   - {fileID: 7879697989395349562}
   - {fileID: 4202711492782105752}
   - {fileID: 2122005648379884587}
+  - {fileID: 5361560225567041612}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7689472300408593520
@@ -10705,6 +10755,7 @@ MonoBehaviour:
   modelController: {fileID: 3386828179635490556}
   playerCamera: {fileID: 1508491437579564983}
   characterController: {fileID: 5275395432786714763}
+  volume: {fileID: 6456880754803795565}
   playerCollider: {fileID: 4840172358601279847}
   playerModel: {fileID: 8838487527833896094}
   playerAnimator: {fileID: 6298204824120077878}

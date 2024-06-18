@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Magus.PlayerController
 {
@@ -30,6 +31,7 @@ namespace Magus.PlayerController
         public PlayerModelController modelController;
         public CinemachineVirtualCamera playerCamera;
         public CharacterController characterController;
+        public Volume volume;
         public Collider playerCollider;
         public Transform playerModel;
         public NetworkAnimator playerAnimator;
@@ -99,10 +101,12 @@ namespace Magus.PlayerController
             if (!base.IsOwner)
             {
                 enabled = false;
+                volume.priority = 0;
             }
             else
             {
                 SetTag(gameObject.tag);
+                volume.priority = 10;
             }
         }
 

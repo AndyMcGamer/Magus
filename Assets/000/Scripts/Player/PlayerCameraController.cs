@@ -43,13 +43,9 @@ namespace Magus.PlayerController
 
             DOTween.To(() => transposer.m_CameraDistance, x => transposer.m_CameraDistance = x, camDist, 0.1f).SetEase(Ease.InOutSine);
 
-            //playerInfo.playerCamera.transform.rotation = Quaternion.Euler(Mathf.LerpUnclamped(minCameraAngle, initialAngle, transposer.m_CameraDistance / cameraDistanceBounds.y / initialDistanceRatio), -45f, 0f);
-
             playerInfo.playerCamera.transform.DOLocalRotate(new Vector3(Mathf.LerpUnclamped(minCameraAngle, initialAngle, camDist / cameraDistanceBounds.y / initialDistanceRatio), -45f, 0f), 0.5f).SetEase(Ease.Linear);
 
             DOTween.To(() => transposer.m_TrackedObjectOffset, x => transposer.m_TrackedObjectOffset = x, Vector3.up * Mathf.LerpUnclamped(minTargetOffset, initialYOffset, camDist / cameraDistanceBounds.y / initialDistanceRatio), 0.1f).SetEase(Ease.InOutSine);
-            
-            //transposer.m_TrackedObjectOffset = Vector3.up * Mathf.LerpUnclamped(minTargetOffset, initialYOffset, transposer.m_CameraDistance / cameraDistanceBounds.y / initialDistanceRatio);
         }
     }
 }

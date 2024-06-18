@@ -90,7 +90,7 @@ namespace Magus.PlayerController
             float scrollValue = value.ReadValue<float>();
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            scrollValue /= 120f;
+            if(Mathf.Abs(scrollValue) > 2) scrollValue /= 120f;
 #endif
 
             playerInfo.playerCamControl.OnZoom(scrollValue);
@@ -176,6 +176,14 @@ namespace Magus.PlayerController
             if (value.started)
             {
                 playerInfo.skillManager.ActivateSkill(8);
+            }
+        }
+
+        public void OnHideUI(InputAction.CallbackContext value)
+        {
+            if (value.started)
+            {
+                playerInfo.playerHUD.gameObject.SetActive(!gameObject.activeSelf);
             }
         }
 
