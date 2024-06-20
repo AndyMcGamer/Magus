@@ -170,21 +170,21 @@ namespace Magus.Multiplayer
         }
 
         [Client]
-        private async void Async_ExitFade(bool fromServer)
+        private async void Async_ExitFade(bool fromServer, bool changeScene = true)
         {
             await Fader.instance.FadeIn(easeFunction: DG.Tweening.Ease.OutQuad, reset: false);
-            HandleForcedDisconnect(fromServer);
+            if(changeScene) HandleForcedDisconnect(fromServer);
         }
 
         [Client]
-        public void ForceDisconnectClient()
+        public void ForceDisconnectClient(bool changeScene = true)
         {
-            StartCoroutine(Client_ForceDisconnectCoroutine());
+            StartCoroutine(Client_ForceDisconnectCoroutine(changeScene));
         }
 
-        private IEnumerator Client_ForceDisconnectCoroutine()
+        private IEnumerator Client_ForceDisconnectCoroutine(bool changeScene)
         {
-            Async_ExitFade(false); // Client Fade
+            Async_ExitFade(false, changeScene); // Client Fade
 
             var mp = base.TransportManager.GetTransport<Multipass>();
 

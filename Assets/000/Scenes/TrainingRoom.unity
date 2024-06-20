@@ -428,7 +428,6 @@ GameObject:
   - component: {fileID: 887962048}
   - component: {fileID: 887962050}
   - component: {fileID: 887962051}
-  - component: {fileID: 887962052}
   m_Layer: 0
   m_Name: PlayerSpawner
   m_TagString: Untagged
@@ -487,7 +486,6 @@ MonoBehaviour:
   _networkBehaviours:
   - {fileID: 887962048}
   - {fileID: 887962051}
-  - {fileID: 887962052}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
@@ -528,22 +526,6 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 887962050}
   _networkObjectCache: {fileID: 887962050}
---- !u!114 &887962052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 887962046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ff4ebc70ca675440a7f010b5ccb046f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 2
-  _addedNetworkObject: {fileID: 887962050}
-  _networkObjectCache: {fileID: 887962050}
-  environment: {fileID: 6189156135507666033}
 --- !u!1 &973316008
 GameObject:
   m_ObjectHideFlags: 0
@@ -1282,12 +1264,16 @@ PrefabInstance:
     - target: {fileID: 3057010152321139323, guid: 33b91bceedbd6df4a88cccac480e487d,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3057010152321139323, guid: 33b91bceedbd6df4a88cccac480e487d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6189156135507666034}
   m_SourcePrefab: {fileID: 100100000, guid: 33b91bceedbd6df4a88cccac480e487d, type: 3}
 --- !u!1 &6189156135507666033 stripped
 GameObject:
@@ -1295,6 +1281,47 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6189156135507666032}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6189156135507666034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6189156135507666033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  _networkBehaviours: []
+  <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
+  <NestedRootNetworkBehaviours>k__BackingField: []
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    LocalScale: {x: 1, y: 1, z: 1}
+  _isNetworked: 1
+  _isSpawnable: 0
+  _isGlobal: 0
+  _initializeOrder: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 0
+  <SpawnableCollectionId>k__BackingField: 0
+  _scenePathHash: 3571733982
+  <SceneId>k__BackingField: 15340480646666349853
+  <AssetPathHash>k__BackingField: 0
 --- !u!1 &6753677818721071472
 GameObject:
   m_ObjectHideFlags: 0

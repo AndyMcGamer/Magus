@@ -32,7 +32,7 @@ namespace Magus.Global
         /// <summary>
         /// Number of rounds needed to win the match
         /// </summary>
-        public const int NUM_WINS_NEEDED = 3;
+        public const int NUM_WINS_NEEDED = 1;
 
         /// <summary>
         /// Maximum number of rounds in a match

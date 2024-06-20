@@ -6,6 +6,7 @@ using Magus.UserInterface;
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -101,14 +102,15 @@ namespace Magus.PlayerController
             controlsPanel.DOScale(Vector3.zero, 0.35f).SetEase(Ease.OutSine);
         }
 
-        public void QuitToMenu()
+        public void QuitToMenu(bool changeScene)
         {
-            ConnectionManager.instance.ForceDisconnectClient();
+            ConnectionManager.instance.ForceDisconnectClient(changeScene);
         }
 
-        public void QuitGame()
+        public async void QuitGame()
         {
-            QuitToMenu();
+            QuitToMenu(false);
+            await Task.Delay(2500);
             Application.Quit();
         }
         

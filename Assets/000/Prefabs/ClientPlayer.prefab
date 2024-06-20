@@ -10721,6 +10721,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: b1386f0e-51bd-4ca5-928c-8605b5943cb5
     m_ActionName: UI/OpenPause[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 971858288733494005}
+        m_TargetAssemblyTypeName: Magus.PlayerController.InputProcessor, Assembly-CSharp
+        m_MethodName: OnHideUI
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7d1f09b1-d311-4df8-9f63-099e4046df6d
+    m_ActionName: Classic/HideUI[/Keyboard/h]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Classic

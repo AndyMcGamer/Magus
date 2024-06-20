@@ -53,7 +53,18 @@ namespace Magus.SceneSpecific
             if (!args.QueueData.AsServer) return;
             int[] serverParams = args.QueueData.SceneLoadData.Params.ServerParams.Cast<int>().ToArray();
             winner = serverParams[0];
-            SetWinner(winner);
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            ServerWinnerBroadcast();
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void ServerWinnerBroadcast()
+        {
+            SetWinner(this.winner);
         }
 
         [ObserversRpc]

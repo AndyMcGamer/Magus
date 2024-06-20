@@ -21,7 +21,6 @@ namespace Magus.SceneSpecific
         public override void OnStartClient()
         {
             base.OnStartClient();
-            Enter();
             gameEnd.OnCountdownChanged += GameEnd_OnCountdownChanged;
             gameEnd.OnWinnerLoaded += LoadWinner;
         }
@@ -36,11 +35,11 @@ namespace Magus.SceneSpecific
         private async void Enter()
         {
             await Fader.instance.FadeOut(1.5f, DG.Tweening.Ease.InSine);
-            LoadWinner(gameEnd.winner);
         }
 
         private void LoadWinner(int winnerNumber)
         {
+            Enter();
             int playerNumber = ConnectionManager.instance.playerData[base.LocalConnection];   
             if(playerNumber == winnerNumber) 
             {

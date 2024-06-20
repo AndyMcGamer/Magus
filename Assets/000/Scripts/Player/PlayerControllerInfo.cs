@@ -41,7 +41,7 @@ namespace Magus.PlayerController
         public float moveSpeed = 5f;
         public Vector3 lastMove;
 
-        private WaitForSeconds fiveSeconds = new (5f);
+        private readonly WaitForSeconds threeSeconds = new (3f);
 
         private bool roundOver;
 
@@ -62,11 +62,6 @@ namespace Magus.PlayerController
             roundOver = false;
         }
 
-        private void OnDestroy()
-        {
-            GlobalPlayerController.instance.OnPlayerDeath -= PlayerDeath;
-        }
-
         public override void OnStartServer()
         {
             base.OnStartServer();
@@ -77,7 +72,7 @@ namespace Magus.PlayerController
         public override void OnStopServer()
         {
             base.OnStopServer();
-            print("Stop Server PlayerInfo");
+            GlobalPlayerController.instance.OnPlayerDeath -= PlayerDeath;
             if (ServerManager != null)
                 ServerManager.Objects.OnPreDestroyClientObjects -= OnPreDestroyClientObjects;
         }
@@ -135,7 +130,7 @@ namespace Magus.PlayerController
             RoundController.instance.SetChangeTimer(false);
             RoundController.instance.DetermineWinner();
 
-            yield return fiveSeconds;
+            yield return threeSeconds;
             RoundController.instance.EndRound();
 
         }

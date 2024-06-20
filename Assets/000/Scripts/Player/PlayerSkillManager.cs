@@ -182,6 +182,7 @@ namespace Magus.PlayerController
                     break;
                 case ActiveSkillType.Dash:
                     playerInfo.playerDash.CastDashSkill(sd as DashSkillData, level);
+                    CastDashSound();
                     break;
                 case ActiveSkillType.Toggle:
                     break;

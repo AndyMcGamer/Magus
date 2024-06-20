@@ -77,7 +77,10 @@ namespace Magus.SceneManagement
             sld.Options.AllowStacking = true;
             sld.ReplaceScenes = ReplaceOption.All;
             sld.Options.LocalPhysics = LocalPhysicsMode.Physics3D;
-            sld.PreferredActiveScene = new PreferredScene(new SceneLookupData("TrainingRoom"), lookup);
+            
+            //sld.PreferredActiveScene = new PreferredScene(new SceneLookupData("TrainingRoom"), lookup);
+            sld.PreferredActiveScene = new PreferredScene(lookup);
+            
             sld.Options.AutomaticallyUnload = true;
             InstanceFinder.SceneManager.LoadConnectionScenes(conn, sld);
         }
